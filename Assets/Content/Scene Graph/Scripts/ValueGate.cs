@@ -3,14 +3,21 @@ using System.Collections;
 
 public class ValueGate : Gate
 {
-//    public void Forward(Gate a)
-//    {
-//        Forward(a, null);
-//    }
-    public override void Forward(Gate a, Gate b)
+    protected override bool ShowGradient
     {
-        base.Forward(a, null);
-        value = a.value;
+        get
+        {
+            return false;
+        }
+    }
+//    public void Awake()
+//    {
+//        input = new Gate[1];
+//    }
+    public override void Forward(params Gate[] v)
+    {
+        base.Forward(v);
+//        value = v[0].value;
     }
     public override void Backward()
     {

@@ -3,20 +3,15 @@ using System.Collections;
 
 public class SigmoidGate : Gate
 {
-//    public void Forward(Gate a)
-//    {
-//        Forward(a, null);
-//    }
-    public override void Forward(Gate a, Gate b)
+    public override void Forward(params Gate[] v)
     {
-        base.Forward(a, b);
-//        print(a.value);
-        value = 1 / (1 + Mathf.Exp(-a.value));
+        base.Forward(v);
+        value = 1 / (1 + Mathf.Exp(-v[0].value));
     }
     public override void Backward()
     {
-        var s = 1 / (1 + Mathf.Exp(-inputA.value));
-        inputA.gradient += (s * (1 - s)) * gradient;
+        var s = 1 / (1 + Mathf.Exp(-input[0].value));
+        input[0].gradient += (s * (1 - s)) * gradient;
     }
     public override string Display()
     {
