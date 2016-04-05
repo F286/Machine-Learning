@@ -18,8 +18,8 @@ public class CONTENT_GraphManager : MonoBehaviour
 
     public void Awake()
     {
-        red = new Vector2[10];
-        blue = new Vector2[40];
+        red = new Vector2[20];
+        blue = new Vector2[60];
 
         for (int i = 0; i < red.Length; i++)
         {
@@ -32,7 +32,7 @@ public class CONTENT_GraphManager : MonoBehaviour
 //        }
         for (int i = 0; i < blue.Length; i++)
         {
-            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f);
+            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f) + new Vector2(3, 0);
         }
 
     }
@@ -98,15 +98,19 @@ public class CONTENT_GraphManager : MonoBehaviour
                 Gizmos.DrawCube(new Vector3(x, y), new Vector3(0.1f, 0.1f, 0.1f));
             }
         }
-        Gizmos.color = Color.red;
         foreach (var item in red)
         {
-            Gizmos.DrawSphere(item, 0.25f);
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(item, 0.16f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(item, 0.15f);
         }
-        Gizmos.color = Color.blue;
         foreach (var item in blue)
         {
-            Gizmos.DrawSphere(item, 0.25f);
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(item, 0.16f);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawSphere(item, 0.15f);
         }
         Evaluate(new Vector2(0, 0));
 //        Handles.Label(new Vector3(-1, -1), Evaluate(new Vector2(-1, -1)).ToString("+#0.000;-#0.000"), EditorStyles.whiteLabel);

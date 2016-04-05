@@ -42,6 +42,7 @@ public class NeuronGate : Gate
         {
             v += input[i].value * weights[i].value;
         }
+//        v = Mathf.PingPong(v, 0.1f);
         v = 1 / (1 + Mathf.Exp(-v));
         v = (v - 0.5f) * 2f;
         return v;
@@ -59,13 +60,18 @@ public class NeuronGate : Gate
 //        value = Calculate;
 //        value = 1 / (1 + Mathf.Exp(-v[0].value));
     }
+    float log;
     public override void Backward()
     {
         if (bias == null)
         {
             return;
         }
-        const float step = 0.1f;
+        const float step = 0.01f;
+
+        // analytical
+        var g = (2f * Mathf.Exp(bias.value)) / (Mathf.Exp(bias.value) + 1).Squared();
+//        var g = (2f * Mathf.Exp(bias.value)) / (Mathf.Exp(bias.value) + 1).Squared();
 
         for (int i = 0; i < weights.Length; i++)
         {
@@ -76,6 +82,8 @@ public class NeuronGate : Gate
             weights[i].value = orig;
 
             weights[i].gradient = (b - a) / step;
+
+//            weights[i].gradient = g * input[i].value;
         }
         {
             var orig = bias.value;
@@ -86,8 +94,9 @@ public class NeuronGate : Gate
 
             bias.gradient = (b - a) / step;
 
-            // analytical
-//            var g = (2f * Mathf.Exp(bias.value)) / (Mathf.Exp(bias.value) + 1).Squared());
+//            bias.gradient = g;
+//            print(bias.gradient - g);
+//            log = (bias.gradient - g);
         }
         // TODO - try it first with numerical gradient calculation for deriviative, then use to compare against analytical gradient
 //        var g = gradient;//1f / gradient;
@@ -143,6 +152,8 @@ public class NeuronGate : Gate
     public override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
+
+//        Debug.Log(log);
 
         var st = EditorStyles.whiteLabel;
         if (st != null)
