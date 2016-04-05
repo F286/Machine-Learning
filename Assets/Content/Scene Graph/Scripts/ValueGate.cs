@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ValueGate : Gate
 {
+    internal bool display = true;
     protected override bool ShowGradient
     {
         get
@@ -25,6 +26,13 @@ public class ValueGate : Gate
     }
     public override string Display()
     {
-        return base.Display();
+        if (display)
+        {
+            return base.Display();
+        }
+        else
+        {
+            return "";
+        }
     }
 }
