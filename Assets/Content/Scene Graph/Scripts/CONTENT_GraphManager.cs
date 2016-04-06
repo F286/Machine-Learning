@@ -18,12 +18,15 @@ public class CONTENT_GraphManager : MonoBehaviour
 
     public void Awake()
     {
-        red = new Vector2[20];
-        blue = new Vector2[60];
+//        red = new Vector2[20];
+//        blue = new Vector2[60];
+        red = new Vector2[8]; 
+        blue = new Vector2[8];
 
         for (int i = 0; i < red.Length; i++)
         {
-            red[i] = Random.insideUnitCircle * 1.5f;
+            red[i] = Random.insideUnitCircle * 3f;
+//            red[i] = Random.insideUnitCircle * 1.5f;
 //            red[i] = Random.insideUnitCircle * 2f;
         }
 //        for (int i = 0; i < blue.Length; i++)
@@ -32,7 +35,8 @@ public class CONTENT_GraphManager : MonoBehaviour
 //        }
         for (int i = 0; i < blue.Length; i++)
         {
-            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f) + new Vector2(3, 0);
+            blue[i] = Random.insideUnitCircle * 3f + new Vector2(2, 0);
+//            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f) + new Vector2(3, 0);
         }
 
     }

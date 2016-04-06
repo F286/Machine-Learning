@@ -42,7 +42,9 @@ public class NeuronGate : Gate
         {
             v += input[i].value * weights[i].value;
         }
+//        v = 1 / (1 + Mathf.Exp(-v));
 //        v = Mathf.PingPong(v, 0.1f);
+//        v = 1 / (1 + Mathf.Pow(-v, 2));
         v = 1 / (1 + Mathf.Exp(-v));
         v = (v - 0.5f) * 2f;
         return v;
@@ -151,6 +153,7 @@ public class NeuronGate : Gate
     }
     public override void OnDrawGizmos()
     {
+//        return;
         base.OnDrawGizmos();
 
 //        Debug.Log(log);

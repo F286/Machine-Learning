@@ -33,6 +33,7 @@ public abstract class Gate : MonoBehaviour
     }
     public virtual void OnDrawGizmos()
     {
+//        return;
 //        var index = 0;
         foreach (var item in input)
         {
