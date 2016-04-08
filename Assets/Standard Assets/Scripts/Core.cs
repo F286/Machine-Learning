@@ -15,10 +15,10 @@ public static class Core
 
     public static Vector4 InverseMask(this Vector4 value, Vector4 mask)
     {
-        mask.x = Mathf.Max(mask.x - 1f, 0);
-        mask.y = Mathf.Max(mask.y - 1f, 0);
-        mask.z = Mathf.Max(mask.z - 1f, 0);
-        mask.w = Mathf.Max(mask.w - 1f, 0);
+        mask.x += (0.5f - mask.x) * 2;
+        mask.y += (0.5f - mask.y) * 2;
+        mask.z += (0.5f - mask.z) * 2;
+        mask.w += (0.5f - mask.w) * 2;
         return new Vector4(value.x * mask.x, value.y * mask.y, value.z * mask.z, value.w * mask.w);
     }
     public static float MaskSum(this Vector4 value, Vector4 mask)

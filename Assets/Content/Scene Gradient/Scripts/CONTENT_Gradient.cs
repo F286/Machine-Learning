@@ -28,6 +28,7 @@ public class CONTENT_Gradient : MonoBehaviour
         var r = Color.red;
         r.a = 0.8f;
 
+        print(input.InverseMask(TestAxis));
         for (float i = -5; i < 5; i += 0.1f)
         {
             var a = input.InverseMask(TestAxis) + TestAxis * i;
@@ -60,7 +61,7 @@ public class CONTENT_Gradient : MonoBehaviour
         gradient.z *= 0.3f;
         gradient.w = 1f;
 
-        // calculate what value was right before tanh function (can cache this)
+        // calculate what value was right before function (can cache this)
         var value = input.x * 1.6f + input.y * 0.5f + input.z * 0.3f + input.w;
 
         // easing curve between -1 and 1
