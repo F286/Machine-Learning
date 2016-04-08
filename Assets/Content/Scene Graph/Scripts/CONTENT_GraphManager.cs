@@ -35,8 +35,8 @@ public class CONTENT_GraphManager : MonoBehaviour
 //        }
         for (int i = 0; i < blue.Length; i++)
         {
-            blue[i] = Random.insideUnitCircle * 3f + new Vector2(2, 0);
-//            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f) + new Vector2(3, 0);
+//            blue[i] = Random.insideUnitCircle * 3f + new Vector2(2, 0);
+            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f) + new Vector2(3, 0);
         }
 
     }
