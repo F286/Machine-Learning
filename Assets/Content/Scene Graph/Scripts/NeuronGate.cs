@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System;
 
 public class NeuronGate : Gate
 {
@@ -12,14 +13,14 @@ public class NeuronGate : Gate
         bias = gameObject.AddComponent<ValueGate>();
         bias.display = false;
 //        bias.value = Random.Range(-0.1f, 0.1f);
-        bias.value = Random.Range(-2f, 2f);
+        bias.value = UnityEngine.Random.Range(-2f, 2f);
 
         weights = new ValueGate[input.Length];
         for (int i = 0; i < input.Length; i++)
         {
             weights[i] = gameObject.AddComponent<ValueGate>();
 //            weights[i].value = Random.Range(-0.1f, 0.1f);
-            weights[i].value = Random.Range(-0.5f, 0.5f);
+            weights[i].value = UnityEngine.Random.Range(-0.5f, 0.5f);
             weights[i].display = false;
         }
 //        parameter = new float[input.Length + 1];
@@ -44,7 +45,7 @@ public class NeuronGate : Gate
             value += input[i].value * weights[i].value;
         }
         value = System.Math.Tanh(value);
-//        v = 1 / (1 + Mathf.Exp(-v));
+//        value = 1 / (1 + Math.Exp(-value));
 //        v = Mathf.PingPong(v, 0.1f);
 //        v = 1 / (1 + Mathf.Pow(-v, 2));
 //        v = 1 / (1 + Mathf.Exp(-v));
@@ -85,6 +86,8 @@ public class NeuronGate : Gate
             value += input[i].value * weights[i].value;
         }
         var tanhD = 1 - (System.Math.Tanh(value)).Squared();
+//        var s = 1 / (1 + Math.Exp(-value));
+//        var tanhD = s * (1 - s);
 
         // Apply tanh derivative (chain rule)
         for (int i = 0; i < weights.Length; i++)
