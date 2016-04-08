@@ -48,7 +48,7 @@ public class CONTENT_Gradient : MonoBehaviour
         value = input.x * weights.x + input.y * weights.y + input.z * weights.z + input.w;//weights.w;
 
         // easing curve between -1 and 1
-        value = (float)System.Math.Tanh(value);
+//        value = (float)System.Math.Tanh(value);
 
         return value;
     }
@@ -61,13 +61,12 @@ public class CONTENT_Gradient : MonoBehaviour
         gradient.y *= weights.y;
         gradient.z *= weights.z;
         gradient.w *= 1;
-//        gradient.w *= 1;//weights.w;
 
         // calculate what value was right before function (can cache this)
         var value = input.x * weights.x + input.y * weights.y + input.z * weights.z + input.w;//weights.w;
 
         // easing curve between -1 and 1
-        gradient *= 1 - ((float)System.Math.Tanh(value)).Squared();
+//        gradient *= 1 - ((float)System.Math.Tanh(value)).Squared();
 
         return gradient;
     }

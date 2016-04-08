@@ -6,11 +6,11 @@ public class SigmoidGate : Gate
     public override void Forward(params Gate[] v)
     {
         base.Forward(v);
-        value = 1 / (1 + Mathf.Exp(-v[0].value));
+        value = 1 / (1 + System.Math.Exp(-v[0].value));
     }
     public override void Backward()
     {
-        var s = 1 / (1 + Mathf.Exp(-input[0].value));
+        var s = 1 / (1 + System.Math.Exp(-input[0].value));
         input[0].gradient += (s * (1 - s)) * gradient;
     }
     public override string Display()

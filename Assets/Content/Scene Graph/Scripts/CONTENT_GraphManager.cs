@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using System;
 
 public class CONTENT_GraphManager : MonoBehaviour 
 {
@@ -25,8 +26,8 @@ public class CONTENT_GraphManager : MonoBehaviour
 
         for (int i = 0; i < red.Length; i++)
         {
-            red[i] = Random.insideUnitCircle * 3f;
-//            red[i] = Random.insideUnitCircle * 1.5f;
+//            red[i] = Random.insideUnitCircle * 3f;
+            red[i] = UnityEngine.Random.insideUnitCircle * 1.5f;
 //            red[i] = Random.insideUnitCircle * 2f;
         }
 //        for (int i = 0; i < blue.Length; i++)
@@ -36,7 +37,7 @@ public class CONTENT_GraphManager : MonoBehaviour
         for (int i = 0; i < blue.Length; i++)
         {
 //            blue[i] = Random.insideUnitCircle * 3f + new Vector2(2, 0);
-            blue[i] = Random.insideUnitCircle.normalized * Random.Range(3f, 3.5f) + new Vector2(3, 0);
+            blue[i] = UnityEngine.Random.insideUnitCircle.normalized * UnityEngine.Random.Range(3f, 3.5f);// + new Vector2(3, 0);
         }
 
     }
@@ -57,7 +58,7 @@ public class CONTENT_GraphManager : MonoBehaviour
             }
         }
     }
-    public float Evaluate(Vector2 v)
+    public double Evaluate(Vector2 v)
     {
         input[0].value = v.x;
         input[1].value = v.y;
@@ -81,7 +82,7 @@ public class CONTENT_GraphManager : MonoBehaviour
     }
     public void Train(float value)
     {
-        var force = Mathf.Sign(-value - output.value) * stepSize;
+        var force = Math.Sign(-value - output.value) * stepSize;
         for (int i = 0; i < all.Count; i++)
         {
             all[i].AddForce(force);
@@ -98,7 +99,7 @@ public class CONTENT_GraphManager : MonoBehaviour
             for (float y = -4; y < 4; y += 0.1f)
             {
 //                Gizmos.color = Color.Lerp(r, b, Evaluate(new Vector2(x, y)));
-                Gizmos.color = Color.Lerp(r, b, 2f * (Evaluate(new Vector2(x, y)) - 0.5f));
+                Gizmos.color = Color.Lerp(r, b, 2f * ((float)Evaluate(new Vector2(x, y)) - 0.5f));
                 Gizmos.DrawCube(new Vector3(x, y), new Vector3(0.1f, 0.1f, 0.1f));
             }
         }

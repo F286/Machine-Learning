@@ -8,6 +8,11 @@ public static class Core
         return v * v;
     }
 
+    public static double Squared(this double v)
+    {
+        return v * v;
+    }
+
     public static Vector4 Mask(this Vector4 value, Vector4 mask)
     {
         return new Vector4(value.x * mask.x, value.y * mask.y, value.z * mask.z, value.w * mask.w);

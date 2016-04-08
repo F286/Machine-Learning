@@ -8,8 +8,8 @@ public abstract class Gate : MonoBehaviour
 //    public float[] parameter = new float[0];
 //    public float[] parameterGradient = new float[0];
 
-    public float value;
-    public float gradient; //Derivative
+    public double value;
+    public double gradient; //Derivative
 
     protected virtual bool ShowGradient
     {
