@@ -5,6 +5,6 @@ public class CONTENT_Neuron : MonoBehaviour
 {
     public void Start()
     {
-        gameObject.AddComponent<CONTENT_ValueNode>();
+//        gameObject.AddComponent<CONTENT_ValueNode>();
     }
 }
