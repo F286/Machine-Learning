@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CONTENT_NodeAdd : Node
+public class CONTENT_NodeTanh : Node
 {
     public double _value;
     public double _derivative;
@@ -10,19 +10,15 @@ public class CONTENT_NodeAdd : Node
 
     public override void forward(params Node[] input)
     {
-        value = 0;
-        for (int i = 0; i < input.Length; i++)
-        {
-            value += input[i].value;
-        }
-//        value = input[0].value + input[1].value;
+        value = System.Math.Tanh(input[0].value);
     }
     public override void backward(params Node[] input)
     {
-        for (int i = 0; i < input.Length; i++)
-        {
-            input[i].derivative += derivative;
-        }
+        var fD = 1 - (System.Math.Tanh(input[0].value)).Squared();
+        input[0].derivative += fD * derivative;
+
+//        var s = 1 / (1 + System.Math.Exp(-input[0].value));
+//        input[0].derivative += s * (1 - s) * derivative;
     }
     public override void train(float step)
     {

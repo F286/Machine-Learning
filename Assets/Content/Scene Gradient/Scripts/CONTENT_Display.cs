@@ -7,44 +7,54 @@ public class CONTENT_Display : MonoBehaviour
     {
         set
         {
-            var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-5, 5, value));
-            s.color = c;
-            var scale = 0.05f + (1f / (1f + Mathf.Exp(-Mathf.Abs(value / 5)))) * 0.3f;
-//            scale = value;
-            transform.localScale = new Vector3(scale, scale, 1);
+            _value += value;
+            _valueCount++;
         }
     }
     public float derivative
     {
         set
         {
-            deriv = value;
-//            s.color = CONTENT_ManagerNeuron.instance.gradient.Evaluate(1f - value);
+            _derivative += value;
+            _derivativeCount++;
         }
     }
-//    public float size
-//    {
-//        set
-//        {
-//            transform.localScale = new Vector3(value * 0.25f, value * 0.25f, 1);
-//        }
-//    }
-    public SpriteRenderer s;
-    protected float deriv;
+    public SpriteRenderer sprite;
+    protected float _value;
+    protected int _valueCount;
+    protected float _derivative;
+    protected int _derivativeCount;
 
     public void Awake()
     {
-        s = gameObject.AddComponent<SpriteRenderer>();
-        s.sprite = Resources.Load<Sprite>("Box Neuron");
-//        s.color = Color.yellow;
-//        transform.localScale = new Vector3(0.5f, 0.5f, 1);
+        sprite = gameObject.AddComponent<SpriteRenderer>();
+        sprite.sprite = Resources.Load<Sprite>("Box Neuron");
         value = 0.5f;
-//        size = 1;
     }
     public virtual void LateUpdate()
     {
-        var r = transform.localEulerAngles;
-        r.z += deriv * -20 * Time.deltaTime;
-        transform.localEulerAngles = r;
+        if (_valueCount > 0)
+        {
+            _value /= _valueCount;
+
+            var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-1, 1, _value));
+            sprite.color = c;
+            var scale = 0.05f + (1f / (1f + Mathf.Exp(-Mathf.Abs(_value / 5)))) * 0.3f;
+            transform.localScale = new Vector3(scale, scale, 1);
+
+            _valueCount = 0;
+            _value = 0;
+        }
+        if (_derivativeCount > 0)
+        {
+            _derivative /= _derivativeCount;
+
+            var r = transform.localEulerAngles;
+            r.z += _derivative * -20 * Time.deltaTime * 10;
+            transform.localEulerAngles = r;
+
+            _derivativeCount = 0;
+            _derivative = 0;
+        }
     }
 }

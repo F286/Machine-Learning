@@ -14,15 +14,23 @@ public class CONTENT_Neuron : MonoBehaviour
 //        var threadMultiply = gameObject.AddComponent<CONTENT_MultiplyNode>();
 
         var add = gameObject.AddComponent<CONTENT_NodeAdd>();
-        add.display = gameObject.AddComponent<CONTENT_Display>();
 
-        var sig = gameObject.AddComponent<CONTENT_NodeSigmoid>();
-        CONTENT_Connection.Create(add, sig);
+        var bias = gameObject.AddComponent<CONTENT_NodeValue>();
+        if (CONTENT_ManagerNeuron.instance.RandomizeStartValues)
+        {
+            bias.value = Random.Range(-0.1f, 0.1f);
+        }
+        CONTENT_Connection.Create(bias, add).name = "connection bias -> add";
+
+        var squish = gameObject.AddComponent<CONTENT_NodeTanh>();
+//        var sig = gameObject.AddComponent<CONTENT_NodeSigmoid>();
+        CONTENT_Connection.Create(add, squish);
+        squish.display = gameObject.AddComponent<CONTENT_Display>();
 
 //        var multiplyConnect
 
         input = add;
-        output = sig;
+        output = squish;
 
 
     }

@@ -8,10 +8,14 @@ public class CONTENT_ConnectionWeighted : MonoBehaviour
     public void Awake()
     {
         var threadValue = gameObject.AddComponent<CONTENT_NodeValue>();
-        threadValue.value = 1f;
+//        threadValue.value = 1f;
+        if (CONTENT_ManagerNeuron.instance.RandomizeStartValues)
+        {
+            threadValue.value = Random.Range(-0.1f, 0.1f);
+        }
         var threadMultiply = gameObject.AddComponent<CONTENT_NodeMultiply>();
 
-        CONTENT_Connection.Create(threadValue, threadMultiply).name = "weighted value -> multiply";
+        CONTENT_Connection.Create(threadValue, threadMultiply).name = "weighted scalar -> multiply";
 
         input = threadMultiply;
         output = threadMultiply;

@@ -17,6 +17,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             node = n;
         }
     }
+    public bool RandomizeStartValues = true;
 
     public List<Node> nodes;
     public List<CONTENT_Connection> connections;
@@ -27,18 +28,23 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     public List<Transform> points;
     public List<SpriteRenderer> grid;
 
+    public List<CONTENT_NodeValue> input = new List<CONTENT_NodeValue>();
+    public CONTENT_NodeAdd output;
+
     public void Awake()
     {
+//        return;
         points = new List<Transform>();
-        for (float x = 0f; x < 2f; x += 0.1f)
+        for (float x = -1f; x < 1f; x += 0.1f)
         {
-            for (float y = -0.2f; y > -2.2f; y -= 0.1f)
+            for (float y = -1f; y < 1f; y += 0.1f)
             {
                 var p = new GameObject("grid", typeof(SpriteRenderer));
+                p.transform.parent = transform;
                 p.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Box Neuron");
                 p.transform.localScale = new Vector3(0.1f, 0.1f, 1f);
                 grid.Add(p.GetComponent<SpriteRenderer>());
-                p.transform.position = new Vector3(x, y, 0);
+                p.transform.localPosition = new Vector3(x, y, 0);
 
                 var c = gradient.Evaluate(0);
                 c.a = 0.4f;
@@ -49,36 +55,40 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
         for (int i = 0; i < 30; i++) 
         {
             var p = new GameObject("point", typeof(SpriteRenderer));
+            p.transform.parent = transform;
             p.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Box Neuron");
             p.transform.localScale = new Vector3(0.05f, 0.05f, 1f);
             points.Add(p.transform);
             if (i < 15)
             {
                 p.GetComponent<SpriteRenderer>().color = gradient.Evaluate(0);
-                p.transform.position = new Vector2(1, -1) + Random.insideUnitCircle * 0.5f;
+//                p.transform.localPosition = Random.insideUnitCircle * 0.5f;
+                p.transform.localPosition = Random.insideUnitCircle * 0.3f + new Vector2(-0.5f, 0);
                 p.tag = "low";
             }
             else
             {
                 p.GetComponent<SpriteRenderer>().color = gradient.Evaluate(1);
-                p.transform.position = new Vector2(1, -1) + Random.insideUnitCircle.normalized * 0.7f;
+//                p.transform.localPosition = Random.insideUnitCircle.normalized * 0.7f;
+                p.transform.localPosition = Random.insideUnitCircle.normalized * 0.3f + new Vector2(0.5f, 0);
                 p.tag = "high";
             }
         }
 
-        var input = new List<CONTENT_NodeValue>();
+//        var input = new List<CONTENT_NodeValue>();
         var layer1 = new List<CONTENT_Neuron>();
         var layer2 = new List<CONTENT_Neuron>();
-        CONTENT_NodeAdd output;
+//        CONTENT_NodeAdd output;
 
         // input
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         {
             var g = new GameObject("input 0 (" + i + ")");
             g.transform.localPosition = new Vector3(0, i);
             var v = g.AddComponent<CONTENT_NodeValue>();
             v.value = Random.Range(-0.5f, 0.5f);
             v.display = v.gameObject.AddComponent<CONTENT_Display>();
+            v.canTrain = false;
             input.Add(v);
         }
 
@@ -95,7 +105,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             layer1.Add(n);
         }
         // layer 2
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             var g = new GameObject("layer 2 (" + i + ")");
             g.transform.localPosition = new Vector3(2, i * 0.66f);
@@ -116,7 +126,8 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             output.display = output.gameObject.AddComponent<CONTENT_Display>();
             foreach (var item in layer2)
             {
-                CONTENT_Connection.Create(item.output, output, true);
+                CONTENT_ConnectionWeighted.Create(item.output, output);
+//                CONTENT_Connection.Create(item.output, output, true);
             }
         }
 //        CONTENT_ConnectionWeighted.Create(input[0], output);
@@ -127,11 +138,31 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     }
     public void Update()
     {
-        for (int i = 0; i < nodes.Count; i++)
+        Evaluate(true, 1);
+        for (int index = 0; index < trainSteps; index++)
         {
-            nodes[i].derivative = 0;
+            for (int i = 0; i < points.Count; i++)
+            {
+                Evaluate(points[i].position, true, points[i].CompareTag("high") ? 1 : -1, true);
+            }
         }
-        GameObject.FindGameObjectWithTag("output").GetComponent<Node>().derivative = 1;
+        for (int i = 0; i < grid.Count; i++)
+        {
+            var c = gradient.Evaluate(Evaluate(grid[i].transform.localPosition));
+            c.a = 0.4f;
+            grid[i].color = c;
+        }
+    }
+    public float trainSpeed = 1;
+    public int trainSteps = 50;
+    public float Evaluate(Vector2 inputSet, bool derive = false, float target = 0, bool train = false)
+    {   
+        input[0].value = inputSet.x;
+        input[1].value = inputSet.y;
+        return Evaluate(derive, target, train);
+    }
+    public float Evaluate(bool derive = false, float target = 0, bool train = false)
+    {
         //forward
         for (int i = 0; i < leftToRight.Count; i++)
         {
@@ -144,16 +175,35 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             nodes[leftToRight[i].node].forward(pass);
         }
 
-        //backwards
-        for (int i = leftToRight.Count - 1; i >= 0; i--)
+        if (derive)
         {
-            var pass = new Node[leftToRight[i].inputs.Length];
-            for (int n = 0; n < pass.Length; n++) 
+            for (int i = 0; i < nodes.Count; i++)
             {
-                pass[n] = nodes[leftToRight[i].inputs[n]];
+                nodes[i].derivative = 0;
             }
-            nodes[leftToRight[i].node].backward(pass);
+            var o = GameObject.FindGameObjectWithTag("output").GetComponent<Node>();
+            o.derivative = (target - o.value);
+//            o.derivative = 1;
+            //backwards
+            for (int i = leftToRight.Count - 1; i >= 0; i--)
+            {
+                var pass = new Node[leftToRight[i].inputs.Length];
+                for (int n = 0; n < pass.Length; n++)
+                {
+                    pass[n] = nodes[leftToRight[i].inputs[n]];
+                }
+                nodes[leftToRight[i].node].backward(pass);
+            }
         }
+        if(train)
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                nodes[i].train(trainSpeed);
+            }
+        }
+//        return (float)output.value;
+        return (float)GameObject.FindGameObjectWithTag("output").GetComponent<Node>().value;
     }
     List<Node> alreadyAdded = new List<Node>();
     void EvaluateConnections(Node node)
@@ -169,7 +219,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             }
             if (inputs.Count > 0)
             {
-                print(node + " - " + inputs.Count);
+//                print(node + " - " + inputs.Count);
                 leftToRight.Add(new NodeInput(inputs.ToArray(), GetIndex(node)));
             }
         }

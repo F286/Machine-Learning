@@ -34,4 +34,8 @@ public class CONTENT_NodeMultiply : Node
 //        input[0].derivative += input[1].value * derivative;
 //        input[1].derivative += input[0].value * derivative;
     }
+    public override void train(float step)
+    {
+        
+    }
 }

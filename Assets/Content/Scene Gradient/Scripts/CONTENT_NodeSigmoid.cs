@@ -15,6 +15,10 @@ public class CONTENT_NodeSigmoid : Node
     public override void backward(params Node[] input)
     {
         var s = 1 / (1 + System.Math.Exp(-input[0].value));
-        input[0].derivative += s * (1 - s);
+        input[0].derivative += s * (1 - s) * derivative;
+    }
+    public override void train(float step)
+    {
+        
     }
 }

@@ -10,6 +10,7 @@ public abstract class Node : MonoBehaviour
 
     public abstract void forward(params Node[] input);
     public abstract void backward(params Node[] input);
+    public abstract void train(float step);
 
     public CONTENT_Display display;
     public Node[] DebugInputs;
