@@ -8,6 +8,13 @@ public class CONTENT_Connection : MonoBehaviour
 
     public void Awake()
     {
-        CONTENT_NeuronManager.instance.connections.Add(this);
+        CONTENT_ManagerNeuron.instance.connections.Add(this);
+    }
+
+    public static void Create(Node a, Node b)
+    {
+        var c = a.gameObject.AddComponent<CONTENT_Connection>();
+        c.from = a;
+        c.to = b;
     }
 }

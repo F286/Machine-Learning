@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 
-public class CONTENT_Gradient : MonoBehaviour 
+public class CONTENT_ManagerGraph : MonoBehaviour 
 {
     const float NumericalStepSize = 0.00001f;
 

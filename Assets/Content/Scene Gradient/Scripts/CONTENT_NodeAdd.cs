@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CONTENT_AddNode : Node
+public class CONTENT_NodeAdd : Node
 {
     public double _value;
     public double _derivative;

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 
-public class CONTENT_NeuronManager : MonoBehaviour 
+public class CONTENT_ManagerNeuron : MonoBehaviour 
 {
     [System.Serializable]
     public class NodeInput
@@ -20,6 +20,21 @@ public class CONTENT_NeuronManager : MonoBehaviour
     public List<CONTENT_Connection> connections;
 
     public List<NodeInput> leftToRight = new List<NodeInput>();
+
+    public void Awake()
+    {
+        var input = new List<CONTENT_NodeValue>();
+        input.Add(new GameObject("Input (0)", typeof(CONTENT_NodeValue)).GetComponent<CONTENT_NodeValue>());
+        input.Add(new GameObject("Input (1)", typeof(CONTENT_NodeValue)).GetComponent<CONTENT_NodeValue>());
+
+        for (int i = 0; i < 2; i++)
+        {
+            var l = new GameObject("Layer 1 (" + i + ")");
+            var n = l.AddComponent<CONTENT_Neuron>();
+//            var threadValue = l.AddComponent<CONTENT_ValueNode>();
+//            var threadMultiply = l.AddComponent<CONTENT_MultiplyNode>();
+        }
+    }
 
     public void Start()
     {
@@ -75,15 +90,15 @@ public class CONTENT_NeuronManager : MonoBehaviour
         }
         return -1;
     }
-
-    static CONTENT_NeuronManager _inst;
-    public static CONTENT_NeuronManager instance
+     
+    static CONTENT_ManagerNeuron _inst;
+    public static CONTENT_ManagerNeuron instance
     {
         get
         {
             if(_inst == null)
             {
-                _inst = GameObject.FindObjectOfType<CONTENT_NeuronManager>();
+                _inst = GameObject.FindObjectOfType<CONTENT_ManagerNeuron>();
             }
             return _inst;
         }

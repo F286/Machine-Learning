@@ -13,6 +13,6 @@ public abstract class Node : MonoBehaviour
 
     public void Awake()
     {
-        CONTENT_NeuronManager.instance.nodes.Add(this);
+        CONTENT_ManagerNeuron.instance.nodes.Add(this);
     }
 }
