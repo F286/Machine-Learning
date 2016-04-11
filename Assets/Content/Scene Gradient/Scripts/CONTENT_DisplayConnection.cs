@@ -11,12 +11,14 @@ public class CONTENT_DisplayConnection : CONTENT_Display
         set
         {
             s.color = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-5, 5, value));
+            v = value;
         }
     }
 //    public SpriteRenderer s;
 //    protected float deriv;
 
     float wiggle;
+    float v;
 
     public override void LateUpdate()
     {
@@ -26,7 +28,7 @@ public class CONTENT_DisplayConnection : CONTENT_Display
 
         var s = transform.localScale;
         s.x = (from.transform.position - to.transform.position).magnitude;
-        s.y = 0.05f + Mathf.Sin(wiggle * 5) * 0.015f;
+        s.y = (1f / (1f + Mathf.Exp(-Mathf.Abs(v / 5)))) * 0.11f + Mathf.Sin(wiggle * 5) * 0.012f;
         transform.localScale = s;
 
         transform.rotation = Quaternion.Euler(0, 0, (to.transform.position - from.transform.position).Angle());
