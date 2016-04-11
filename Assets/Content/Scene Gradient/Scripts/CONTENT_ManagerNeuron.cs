@@ -66,12 +66,30 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             }
         }
     }
-
     public void Start()
     {
         EvaluateConnections(GameObject.FindGameObjectWithTag("output").GetComponent<Node>());
     }
-
+    public void Update()
+    {
+        //forward
+        for (int i = leftToRight.Count - 1; i >= 0; i--)
+        {
+            if (leftToRight[i].inputs.Length > 0)
+            {
+                var pass = new Node[leftToRight[i].inputs.Length];
+                for (int n = 0; n < pass.Length; n++) 
+                {
+                    pass[n] = nodes[leftToRight[i].inputs[n]];
+                }
+                nodes[i].forward(pass);
+            }
+        }
+        //backwards
+        for (int i = 0; i < leftToRight.Count; i++)
+        {
+        }
+    }
     List<Node> alreadyAdded = new List<Node>();
     void EvaluateConnections(Node node)
     {

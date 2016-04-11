@@ -8,6 +8,7 @@ public class CONTENT_ConnectionWeighted : MonoBehaviour
     public void Awake()
     {
         var threadValue = gameObject.AddComponent<CONTENT_NodeValue>();
+        threadValue.value = 1f;
         var threadMultiply = gameObject.AddComponent<CONTENT_NodeMultiply>();
 
         CONTENT_Connection.Create(threadValue, threadMultiply);

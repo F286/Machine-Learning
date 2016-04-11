@@ -32,7 +32,8 @@ public class CONTENT_Connection : MonoBehaviour
     {
         if(display)
         {
-            display.value = 0.5f;
+            display.value = 0;
+//            display.value = 0.5f;
             display.derivative = 0;
         }
     }
