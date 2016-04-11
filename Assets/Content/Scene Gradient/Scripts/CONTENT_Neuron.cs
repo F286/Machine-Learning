@@ -16,10 +16,13 @@ public class CONTENT_Neuron : MonoBehaviour
         var add = gameObject.AddComponent<CONTENT_NodeAdd>();
         add.display = gameObject.AddComponent<CONTENT_Display>();
 
+        var sig = gameObject.AddComponent<CONTENT_NodeSigmoid>();
+        CONTENT_Connection.Create(add, sig);
+
 //        var multiplyConnect
 
         input = add;
-        output = add;
+        output = sig;
 
 
     }

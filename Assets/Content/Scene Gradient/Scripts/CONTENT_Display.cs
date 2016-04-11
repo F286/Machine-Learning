@@ -7,7 +7,8 @@ public class CONTENT_Display : MonoBehaviour
     {
         set
         {
-            s.color = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-5, 5, value));
+            var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-5, 5, value));
+            s.color = c;
             var scale = 0.05f + (1f / (1f + Mathf.Exp(-Mathf.Abs(value / 5)))) * 0.3f;
 //            scale = value;
             transform.localScale = new Vector3(scale, scale, 1);

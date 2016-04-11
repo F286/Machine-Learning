@@ -10,7 +10,9 @@ public class CONTENT_DisplayConnection : CONTENT_Display
     {
         set
         {
-            s.color = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-5, 5, value));
+            var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-5, 5, value));
+            c.a = 0.6f;
+            s.color = c;
             v = value;
         }
     }

@@ -24,8 +24,48 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     public List<NodeInput> leftToRight = new List<NodeInput>();
     public Gradient gradient;
 
+    public List<Transform> points;
+    public List<SpriteRenderer> grid;
+
     public void Awake()
     {
+        points = new List<Transform>();
+        for (float x = 0f; x < 2f; x += 0.1f)
+        {
+            for (float y = -0.2f; y > -2.2f; y -= 0.1f)
+            {
+                var p = new GameObject("grid", typeof(SpriteRenderer));
+                p.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Box Neuron");
+                p.transform.localScale = new Vector3(0.1f, 0.1f, 1f);
+                grid.Add(p.GetComponent<SpriteRenderer>());
+                p.transform.position = new Vector3(x, y, 0);
+
+                var c = gradient.Evaluate(0);
+                c.a = 0.4f;
+                p.GetComponent<SpriteRenderer>().color = c;
+                p.GetComponent<SpriteRenderer>().sortingOrder = -100;
+            }
+        }
+        for (int i = 0; i < 30; i++) 
+        {
+            var p = new GameObject("point", typeof(SpriteRenderer));
+            p.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Box Neuron");
+            p.transform.localScale = new Vector3(0.05f, 0.05f, 1f);
+            points.Add(p.transform);
+            if (i < 15)
+            {
+                p.GetComponent<SpriteRenderer>().color = gradient.Evaluate(0);
+                p.transform.position = new Vector2(1, -1) + Random.insideUnitCircle * 0.5f;
+                p.tag = "low";
+            }
+            else
+            {
+                p.GetComponent<SpriteRenderer>().color = gradient.Evaluate(1);
+                p.transform.position = new Vector2(1, -1) + Random.insideUnitCircle.normalized * 0.7f;
+                p.tag = "high";
+            }
+        }
+
         var input = new List<CONTENT_NodeValue>();
         var layer1 = new List<CONTENT_Neuron>();
         var layer2 = new List<CONTENT_Neuron>();
@@ -43,10 +83,10 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
         }
 
         // layer 1
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 6; i++)
         {
             var g = new GameObject("layer 1 (" + i + ")");
-            g.transform.localPosition = new Vector3(1, i * 0.5f);
+            g.transform.localPosition = new Vector3(1, i * 0.4f);
             var n = g.AddComponent<CONTENT_Neuron>();
             foreach (var item in input)
             {
@@ -58,7 +98,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             var g = new GameObject("layer 2 (" + i + ")");
-            g.transform.localPosition = new Vector3(2, i * 0.5f);
+            g.transform.localPosition = new Vector3(2, i * 0.66f);
             var n = g.AddComponent<CONTENT_Neuron>();
             foreach (var item in layer1)
             {
@@ -87,6 +127,11 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     }
     public void Update()
     {
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            nodes[i].derivative = 0;
+        }
+        GameObject.FindGameObjectWithTag("output").GetComponent<Node>().derivative = 1;
         //forward
         for (int i = 0; i < leftToRight.Count; i++)
         {
@@ -97,9 +142,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             }
             nodes[leftToRight[i].node].DebugInputs = pass;
             nodes[leftToRight[i].node].forward(pass);
-            nodes[leftToRight[i].node].derivative = 0;
         }
-        GameObject.FindGameObjectWithTag("output").GetComponent<Node>().derivative = 1;
 
         //backwards
         for (int i = leftToRight.Count - 1; i >= 0; i--)
