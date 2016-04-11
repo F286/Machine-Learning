@@ -20,54 +20,72 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     public List<CONTENT_Connection> connections;
 
     public List<NodeInput> leftToRight = new List<NodeInput>();
+    public Gradient gradient;
 
     public void Awake()
     {
         var input = new List<CONTENT_NodeValue>();
-        input.Add(new GameObject("Input (0)", typeof(CONTENT_NodeValue)).GetComponent<CONTENT_NodeValue>());
-        input.Add(new GameObject("Input (1)", typeof(CONTENT_NodeValue)).GetComponent<CONTENT_NodeValue>());
+        var layer1 = new List<CONTENT_Neuron>();
+        CONTENT_NodeAdd output;
 
+        // input
         for (int i = 0; i < 2; i++)
         {
-            var l = new GameObject("Layer 1 (" + i + ")");
-            var n = l.AddComponent<CONTENT_Neuron>();
+            var g = new GameObject("input 0 (" + i + ")");
+            g.transform.localPosition = new Vector3(0, i);
+            var v = g.AddComponent<CONTENT_NodeValue>();
+            v.display = v.gameObject.AddComponent<CONTENT_Display>();
+            input.Add(v);
+        }
+
+        // layer 1
+        for (int i = 0; i < 2; i++)
+        {
+            var g = new GameObject("layer 1 (" + i + ")");
+            g.transform.localPosition = new Vector3(1, i);
+            var n = g.AddComponent<CONTENT_Neuron>();
+            foreach (var item in input)
+            {
+                CONTENT_ConnectionWeighted.Create(item, n.input);
+            }
+            layer1.Add(n);
 //            var threadValue = l.AddComponent<CONTENT_ValueNode>();
 //            var threadMultiply = l.AddComponent<CONTENT_MultiplyNode>();
+        }
+
+        // output
+        {
+            var g = new GameObject("output");
+            g.transform.localPosition = new Vector3(2, 0);
+            output = g.AddComponent<CONTENT_NodeAdd>();
+            output.tag = "output";
+            output.display = output.gameObject.AddComponent<CONTENT_Display>();
+            foreach (var item in layer1)
+            {
+                CONTENT_Connection.Create(item.output, output, true);
+            }
         }
     }
 
     public void Start()
     {
-//        nodes = gameObject.GetComponentsInChildren<INode>();
-//        connections = gameObject.GetComponentsInChildren<CONTENT_Connection>();
-//
-        AddConnections(GameObject.FindGameObjectWithTag("output").GetComponent<Node>());
-
-//        print(leftToRight.Count);
-//        print(leftToRight[0]);
-//        print(leftToRight[0][0]);
-//        print(leftToRight[0][1]);
+        EvaluateConnections(GameObject.FindGameObjectWithTag("output").GetComponent<Node>());
     }
 
     List<Node> alreadyAdded = new List<Node>();
-    void AddConnections(Node node)
+    void EvaluateConnections(Node node)
     {
         if (!alreadyAdded.Contains(node))
         {
-//            print(node);
             alreadyAdded.Add(node);
-//            nodes.Add(node);
             var inputs = new List<int>();
             foreach (var item in GetInputs(node))
             {
-//                print(GetIndex(item));
                 inputs.Add(GetIndex(item));
-                AddConnections(item);
+                EvaluateConnections(item);
             }
-            print(inputs.Count);
             leftToRight.Add(new NodeInput(inputs.ToArray()));
         }
-//        connections = 
     }
     public IEnumerable<Node> GetInputs(Node to)
     {

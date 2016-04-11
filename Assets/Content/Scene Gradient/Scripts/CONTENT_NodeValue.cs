@@ -16,9 +16,4 @@ public class CONTENT_NodeValue : Node
     {
 
     }
-//    public ValueNode(float value)
-//    {
-//        this.value = value;
-//        this.derivative = 0;
-//    }
 }
