@@ -10,11 +10,18 @@ public class CONTENT_NodeAdd : Node
 
     public override void forward(params Node[] input)
     {
-        value = input[0].value + input[1].value;
+        value = 0;
+        for (int i = 0; i < input.Length; i++)
+        {
+            value += input[i].value;
+        }
+//        value = input[0].value + input[1].value;
     }
     public override void backward(params Node[] input)
     {
-        input[0].derivative += derivative;
-        input[1].derivative += derivative;
+        for (int i = 0; i < input.Length; i++)
+        {
+            input[i].derivative += derivative;
+        }
     }
 }

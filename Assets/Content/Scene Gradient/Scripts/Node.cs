@@ -12,6 +12,7 @@ public abstract class Node : MonoBehaviour
     public abstract void backward(params Node[] input);
 
     public CONTENT_Display display;
+    public Node[] DebugInputs;
 
     public void Awake()
     {

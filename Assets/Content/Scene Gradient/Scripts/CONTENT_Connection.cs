@@ -12,7 +12,7 @@ public class CONTENT_Connection : MonoBehaviour
     {
         CONTENT_ManagerNeuron.instance.connections.Add(this);
     }
-    public static void Create(Node a, Node b, bool createDisplay = false)
+    public static CONTENT_Connection Create(Node a, Node b, bool createDisplay = false)
     {
         var g = new GameObject("connection");
 
@@ -27,6 +27,7 @@ public class CONTENT_Connection : MonoBehaviour
             d.to = b;
             c.display = d;
         }
+        return c;
     }
     public void LateUpdate()
     {
