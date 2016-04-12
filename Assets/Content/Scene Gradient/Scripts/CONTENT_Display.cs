@@ -40,6 +40,7 @@ public class CONTENT_Display : MonoBehaviour
             var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-1, 1, _value));
             sprite.color = c;
             var scale = 0.05f + (1f / (1f + Mathf.Exp(-Mathf.Abs(_value / 5)))) * 0.3f;
+            scale *= 2;
             transform.localScale = new Vector3(scale, scale, 1);
 
             _valueCount = 0;

@@ -17,6 +17,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             node = n;
         }
     }
+    public bool GenerateGraphFromCode = true;
     public bool RandomizeStartValues = true;
 
     public List<Node> nodes;
@@ -33,6 +34,10 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
 
     public void Awake()
     {
+        if (!GenerateGraphFromCode)
+        {
+            return;
+        }
         Random.InitState(0);
 
 //        return;
@@ -77,10 +82,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             }
         }
 
-//        var input = new List<CONTENT_NodeValue>();
-        var layer1 = new List<CONTENT_Neuron>();
-        var layer2 = new List<CONTENT_Neuron>();
-//        CONTENT_NodeAdd output;
+        var layer1 = new List<CONTENT_NeuronLstm>();
 
         // input
         for (int i = 0; i < 2; i++)
@@ -93,32 +95,61 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             v.canTrain = false;
             input.Add(v);
         }
-
         // layer 1
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 1; i++)
         {
             var g = new GameObject("layer 1 (" + i + ")");
             g.transform.localPosition = new Vector3(1, i * 0.4f);
-            var n = g.AddComponent<CONTENT_Neuron>();
-            foreach (var item in input)
+            var n = g.AddComponent<CONTENT_NeuronLstm>();
+            foreach (var a in input)
             {
-                CONTENT_ConnectionWeighted.Create(item, n.input);
+                foreach (var b in n.input)
+                {
+                    CONTENT_ConnectionWeighted.Create(a, b);
+                }
+//                CONTENT_ConnectionWeighted.Create(item, n.input);
             }
             layer1.Add(n);
         }
-        // layer 2
-        for (int i = 0; i < 3; i++)
-        {
-            var g = new GameObject("layer 2 (" + i + ")");
-            g.transform.localPosition = new Vector3(2, i * 0.66f);
-            var n = g.AddComponent<CONTENT_Neuron>();
-            foreach (var item in layer1)
-            {
-                CONTENT_ConnectionWeighted.Create(item.output, n.input);
-            }
-            layer2.Add(n);
-        }
 
+
+//        // input
+//        for (int i = 0; i < 2; i++)
+//        {
+//            var g = new GameObject("input 0 (" + i + ")");
+//            g.transform.localPosition = new Vector3(0, i);
+//            var v = g.AddComponent<CONTENT_NodeValue>();
+//            v.value = Random.Range(-0.5f, 0.5f);
+//            v.display = v.gameObject.AddComponent<CONTENT_Display>();
+//            v.canTrain = false;
+//            input.Add(v);
+//        }
+//
+//        // layer 1
+//        for (int i = 0; i < 6; i++)
+//        {
+//            var g = new GameObject("layer 1 (" + i + ")");
+//            g.transform.localPosition = new Vector3(1, i * 0.4f);
+//            var n = g.AddComponent<CONTENT_Neuron>();
+//            foreach (var item in input)
+//            {
+//                CONTENT_ConnectionWeighted.Create(item, n.input);
+//            }
+//            layer1.Add(n);
+//        }
+//        // layer 2
+//        for (int i = 0; i < 3; i++)
+//        {
+//            var g = new GameObject("layer 2 (" + i + ")");
+//            g.transform.localPosition = new Vector3(2, i * 0.66f);
+//            var n = g.AddComponent<CONTENT_Neuron>();
+//            foreach (var item in layer1)
+//            {
+//                CONTENT_ConnectionWeighted.Create(item.output, n.input);
+//            }
+//            layer2.Add(n);
+//        }
+//
         // output
         {
             var g = new GameObject("output");
@@ -126,7 +157,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             output = g.AddComponent<CONTENT_NodeAdd>();
             output.tag = "output";
             output.display = output.gameObject.AddComponent<CONTENT_Display>();
-            foreach (var item in layer2)
+            foreach (var item in layer1)
             {
                 CONTENT_ConnectionWeighted.Create(item.output, output);
 //                CONTENT_Connection.Create(item.output, output, true);
@@ -149,12 +180,19 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
 //        var b = Evaluate();
 //        input[0].value = valueOrig;
 //        print((b - a) / numericalStep);
-        for (int index = 0; index < trainSteps; index++)
+        if (GenerateGraphFromCode)
         {
-            for (int i = 0; i < points.Count; i++)
+            for (int index = 0; index < trainSteps; index++)
             {
-                Evaluate(points[i].position, true, points[i].CompareTag("high") ? 1 : -1, true);
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Evaluate(points[i].position, true, points[i].CompareTag("high") ? 1 : -1, true);
+                }
             }
+        }
+        else
+        {
+            Evaluate(true, null);
         }
         for (int i = 0; i < grid.Count; i++)
         {
@@ -165,13 +203,13 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     }
     public float trainSpeed = 1;
     public int trainSteps = 50;
-    public float Evaluate(Vector2 inputSet, bool derive = false, float target = 0, bool train = false)
+    public float Evaluate(Vector2 inputSet, bool derive = false, float? target = null, bool train = false)
     {   
         input[0].value = inputSet.x;
         input[1].value = inputSet.y;
         return Evaluate(derive, target, train);
     }
-    public float Evaluate(bool derive = false, float target = 0, bool train = false)
+    public float Evaluate(bool derive = false, float? target = null, bool train = false)
     {
         //forward
         for (int i = 0; i < leftToRight.Count; i++)
@@ -192,9 +230,15 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
                 nodes[i].derivative = 0;
             }
             var o = GameObject.FindGameObjectWithTag("output").GetComponent<Node>();
-            o.derivative = (target - o.value);
-            o.derivative = System.Math.Sign(o.derivative) * System.Math.Abs(o.derivative);
-//            o.derivative = 1;
+            if (target.HasValue)
+            {
+                o.derivative = (target.Value - o.value);
+                o.derivative = System.Math.Sign(o.derivative) * System.Math.Abs(o.derivative);
+            }
+            else
+            {
+                o.derivative = 1;
+            }
             //backwards
             for (int i = leftToRight.Count - 1; i >= 0; i--)
             {

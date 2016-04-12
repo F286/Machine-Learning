@@ -15,9 +15,15 @@ public abstract class Node : MonoBehaviour
     public CONTENT_Display display;
     public Node[] DebugInputs;
 
+    public bool CreateDisplay;
+
     public void Awake()
     {
         CONTENT_ManagerNeuron.instance.nodes.Add(this);
+        if (CreateDisplay)
+        {
+            display = gameObject.AddComponent<CONTENT_Display>();
+        }
     }
     public void LateUpdate()
     {
