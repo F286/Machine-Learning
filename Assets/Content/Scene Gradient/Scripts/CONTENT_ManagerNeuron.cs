@@ -33,6 +33,8 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
 
     public void Awake()
     {
+        Random.InitState(0);
+
 //        return;
         points = new List<Transform>();
         for (float x = -1f; x < 1f; x += 0.1f)
@@ -59,18 +61,18 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             p.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Box Neuron");
             p.transform.localScale = new Vector3(0.05f, 0.05f, 1f);
             points.Add(p.transform);
-            if (i < 15)
+            if (i < 16)
             {
                 p.GetComponent<SpriteRenderer>().color = gradient.Evaluate(0);
-//                p.transform.localPosition = Random.insideUnitCircle * 0.5f;
-                p.transform.localPosition = Random.insideUnitCircle * 0.3f + new Vector2(-0.5f, 0);
+                p.transform.localPosition = Random.insideUnitCircle * 0.5f;
+//                p.transform.localPosition = Random.insideUnitCircle * 0.3f + new Vector2(-0.5f, 0);
                 p.tag = "low";
             }
             else
             {
                 p.GetComponent<SpriteRenderer>().color = gradient.Evaluate(1);
-//                p.transform.localPosition = Random.insideUnitCircle.normalized * 0.7f;
-                p.transform.localPosition = Random.insideUnitCircle.normalized * 0.3f + new Vector2(0.5f, 0);
+                p.transform.localPosition = Random.insideUnitCircle.normalized * 0.7f;
+//                p.transform.localPosition = Random.insideUnitCircle.normalized * 0.3f + new Vector2(0.5f, 0);
                 p.tag = "high";
             }
         }
@@ -138,7 +140,15 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
     }
     public void Update()
     {
-        Evaluate(true, 1);
+//        Evaluate(new Vector2(1, 1), true, 1);
+//
+//        var numericalStep = 0.0001f;
+//        var valueOrig = input[0].value;
+//        var a = Evaluate();
+//        input[0].value += numericalStep;
+//        var b = Evaluate();
+//        input[0].value = valueOrig;
+//        print((b - a) / numericalStep);
         for (int index = 0; index < trainSteps; index++)
         {
             for (int i = 0; i < points.Count; i++)
@@ -183,6 +193,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
             }
             var o = GameObject.FindGameObjectWithTag("output").GetComponent<Node>();
             o.derivative = (target - o.value);
+            o.derivative = System.Math.Sign(o.derivative) * System.Math.Abs(o.derivative);
 //            o.derivative = 1;
             //backwards
             for (int i = leftToRight.Count - 1; i >= 0; i--)
