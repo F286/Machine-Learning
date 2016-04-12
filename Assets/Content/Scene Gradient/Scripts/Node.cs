@@ -17,6 +17,11 @@ public abstract class Node : MonoBehaviour
 
     public bool CreateDisplay;
 
+    public void Reset()
+    {
+        CreateDisplay = true;
+    }
+
     public void Awake()
     {
         CONTENT_ManagerNeuron.instance.nodes.Add(this);
