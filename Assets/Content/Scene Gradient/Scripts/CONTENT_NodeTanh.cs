@@ -25,6 +25,7 @@ public class CONTENT_NodeTanh : Node
             fD += input[i].value;
         }
         fD = 1 - (System.Math.Tanh(fD)).Squared();
+        fD *= derivative;
         for (int i = 0; i < input.Length; i++)
         {
             input[i].derivative += fD;
