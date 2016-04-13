@@ -6,6 +6,7 @@ public class CONTENT_CreateConnection : MonoBehaviour
     public Node from;
     public Node to;
     public bool createDisplay = true;
+    public float offset;
 
     public void Reset()
     {
@@ -14,6 +15,6 @@ public class CONTENT_CreateConnection : MonoBehaviour
 
 	public void Awake () 
     {
-        CONTENT_Connection.Create(from, to, createDisplay);
+        CONTENT_Connection.Create(from, to, createDisplay, offset);
 	}
 }

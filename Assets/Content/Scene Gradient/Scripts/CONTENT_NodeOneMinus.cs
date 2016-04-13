@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CONTENT_NodeSigmoid : Node
+public class CONTENT_NodeOneMinus : Node
 {
     public double _value;
     public double _derivative;
@@ -10,25 +10,18 @@ public class CONTENT_NodeSigmoid : Node
 
     public override void forward(params Node[] input)
     {
-        value = 0.0;
+        value = 0;
         for (int i = 0; i < input.Length; i++)
         {
-            value += input[i].value;
+            value += 1 - input[i].value;
         }
-       value = 1 / (1 + System.Math.Exp(-value));
+//        value = input[0].value + input[1].value;
     }
     public override void backward(params Node[] input)
     {
-        var s = 0.0;
         for (int i = 0; i < input.Length; i++)
         {
-            s += input[i].value;
-        }
-        s = 1 / (1 + System.Math.Exp(-s));
-        s = s * (1 - s) * derivative;
-        for (int i = 0; i < input.Length; i++)
-        {
-            input[i].derivative += s;
+            input[i].derivative -= derivative;
         }
     }
     public override void train(float step)

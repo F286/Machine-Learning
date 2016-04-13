@@ -6,26 +6,11 @@ public class CONTENT_DisplayConnection : CONTENT_Display
     public Node from;
     public Node to;
 
-//    public override float value
-//    {
-//        set
-//        {
-//            var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-1, 1, value));
-//            if (value == 0)
-//            {
-//                c = Color.grey;
-//            }
-//            c.a = 0.6f;
-//            s.color = c;
-//            v = value;
-//        }
-//    }
-//    public SpriteRenderer s;
-//    protected float deriv;
+    public float offset;
 
     float wiggle;
-//    float v;
     float valueCached;
+
     public override void LateUpdate()
     {
         if (_valueCount > 0)
@@ -34,7 +19,7 @@ public class CONTENT_DisplayConnection : CONTENT_Display
             valueCached = _value;
 
             var c = CONTENT_ManagerNeuron.instance.gradient.Evaluate(Mathf.InverseLerp(-1, 1, _value));
-            if (_value == 0)
+            if (_value == 0.00000017f)
             {
                 c = new Color(0.7f, 0.7f, 0.7f);
             }
@@ -52,6 +37,9 @@ public class CONTENT_DisplayConnection : CONTENT_Display
             wiggle += _derivative * Time.deltaTime * 10;
 
             transform.position = (from.transform.position + to.transform.position) / 2f;
+            var perp = (from.transform.position + to.transform.position).normalized;
+            perp = new Vector3(-perp.y, perp.x, 0);
+            transform.position += perp * offset * 0.05f;
 
             var s = transform.localScale;
             s.x = (from.transform.position - to.transform.position).magnitude;

@@ -20,9 +20,9 @@ public class CONTENT_ConnectionWeighted : MonoBehaviour
         input = threadMultiply;
         output = threadMultiply;
     }
-    public static void Create(Node a, Node b)
+    public static void Create(Node a, Node b, float weight = 0f)
     {
-        var g = new GameObject("connection weighted");
+        var g = new GameObject("weight");
 
         var c = g.AddComponent<CONTENT_ConnectionWeighted>();
         CONTENT_Connection.Create(a, c.input).name = "weighted from -> multiply";
@@ -34,5 +34,10 @@ public class CONTENT_ConnectionWeighted : MonoBehaviour
         d.from = a;
         d.to = b;
         c.GetComponent<CONTENT_NodeValue>().display = d;
+
+        if (weight != 0)
+        {
+            c.GetComponent<CONTENT_NodeValue>().value = weight;
+        }
     }
 }
