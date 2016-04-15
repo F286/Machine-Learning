@@ -4,6 +4,7 @@ using System.Collections;
 public class CONTENT_Equation : MonoBehaviour 
 {
     public CONTENT_Node.Type type;
+    public CONTENT_Equation[] input;
 
     public void forward(params CONTENT_Equation[] input)
     {

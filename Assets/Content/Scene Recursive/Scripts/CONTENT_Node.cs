@@ -19,4 +19,5 @@ public class CONTENT_Node : MonoBehaviour
     public List<CONTENT_Node> input;
     public List<CONTENT_Node> output;
     public ulong added;
+    public List<CONTENT_Equation> equations;
 }
