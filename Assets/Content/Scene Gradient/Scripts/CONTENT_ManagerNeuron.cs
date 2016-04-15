@@ -6,6 +6,18 @@ using System.Collections.Generic;
 public class CONTENT_ManagerNeuron : MonoBehaviour 
 {
     [System.Serializable]
+    public class FrameData
+    {
+        public float[] value;
+        public float[] derivative;
+
+        public FrameData(int length)
+        {
+            value = new float[length];
+            derivative = new float[length];
+        }
+    }
+    [System.Serializable]
     public class NodeInput
     {
         public int[] inputs;
@@ -22,6 +34,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
 
     public List<Node> nodes;
     public List<CONTENT_Connection> connections;
+    public List<FrameData> data;
 
     public List<NodeInput> leftToRight = new List<NodeInput>();
     public Gradient gradient;
