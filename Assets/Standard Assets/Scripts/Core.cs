@@ -3,6 +3,10 @@ using System.Collections;
 
 public static class Core 
 {
+    public static float Sigmoid(float v)
+    {
+        return 1 / (1 + (float)System.Math.Exp(-v));
+    }
     public static float Angle(this Vector3 v)
     {
         return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
