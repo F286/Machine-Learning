@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 2;
+    public const int TotalFrames = 10;
     [System.Serializable]
     public class Frame
     {
@@ -61,21 +61,26 @@ public class CONTENT_NodeManager : MonoBehaviour
         for (int i = 0; i < node.input.Count; i++)
         {
             var item = node.input[i];
-            if (currentTree.Contains(item) && currentFrame + 1 < TotalFrames)
+            if (currentTree.Contains(item))
             {
-                var e = AddEquations(item, currentFrame + 1, null);
-                if (e)
+                if (currentFrame + 1 < TotalFrames)
                 {
-                    _input.Add(e.Val);
+                    AddEquations(item, currentFrame + 1, null);
+                    _input.Add(new DataPointer(currentFrame + 1, item.current.node));
+//                    if (e)
+//                    {
+//                        _input.Add(e.Val);
+//                    }
                 }
             }
             else
             {
-                var e = AddEquations(item, currentFrame, currentTree);
-                if (e)
-                {
-                    _input.Add(e.Val);
-                }
+                AddEquations(item, currentFrame, currentTree);
+                _input.Add(new DataPointer(currentFrame, item.current.node));
+//                if (e)
+//                {
+//                    _input.Add(e.Val);
+//                }
             }
         }
         if (!nodes.Contains(node))
@@ -84,9 +89,9 @@ public class CONTENT_NodeManager : MonoBehaviour
             nodes.Add(node);
         }
         {
-            var g = new GameObject(node.name + " (" + node.type.ToString() + ")  f " + currentFrame + "  n " + node.current.node);
+            var g = new GameObject(node.name + " (" + node.type.ToString() + ")  f " + currentFrame + "  n " + node.current.node + "  i " + _input.Count);
             print(g.name);
-            print(_input.Count);
+//            print(_input.Count);
             var e = g.AddComponent<CONTENT_Equation>();
             e.type = node.type;
             e.Val = new DataPointer(currentFrame, node.current.node);

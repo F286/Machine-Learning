@@ -37,11 +37,11 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v / 2f));
 
             var s = sprites[i].transform.localScale;
-            s.y = Mathf.Abs(v);
+            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 1f);
 //            s.y = Core.Sigmoid(Mathf.Abs(v / 2f) - 1.5f);
 
             var wiggle = Mathf.Sin(Time.time * 20 * d);// * 0.5f + 0.5f;
-            s.y = s.y + d * 0.05f * wiggle;
+            s.y = 0.12f + s.y + d * 0.05f * wiggle;
 
 //            s.y = Core.Sigmoid((float)d);
             sprites[i].transform.localScale = s;
