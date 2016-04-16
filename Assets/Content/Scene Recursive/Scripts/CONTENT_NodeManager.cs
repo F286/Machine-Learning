@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 1;
+    public const int TotalFrames = 10;
 
     [System.Serializable]
     public class Frame
@@ -20,7 +20,7 @@ public class CONTENT_NodeManager : MonoBehaviour
     }
 
     public List<CONTENT_Node> nodes;
-    public List<CONTENT_Node> inputs;
+//    public List<CONTENT_Node> inputs;
 //    public CONTENT_Node[] nodes;
     public Frame[] frames;
     public List<CONTENT_Equation> equations;
@@ -42,14 +42,16 @@ public class CONTENT_NodeManager : MonoBehaviour
         for (int i = 0; i < nodes.Count; i++)
         {
             var item = nodes[i];
+//            item.current = new DataPointer(0, nodes.Count);
             var v = item.gameObject.AddComponent<CONTENT_NodeVisualize>();
-            item.index = i;
+//            item.index = i;
+
         }
     }
 
-    CONTENT_Equation AddEquations(CONTENT_Node node, int age = 0, List<CONTENT_Node> currentTree = null)
+    CONTENT_Equation AddEquations(CONTENT_Node node, int currentFrame = 0, List<CONTENT_Node> currentTree = null)
     {
-        if (age >= TotalFrames)
+        if (currentFrame >= TotalFrames)
         {
             return null;
         }
@@ -63,18 +65,18 @@ public class CONTENT_NodeManager : MonoBehaviour
         for (int i = 0; i < node.input.Count; i++)
         {
             var item = node.input[i];
-            if ((item.added & 1U << age) == 0)
+            if ((item.added & 1U << currentFrame) == 0)
             {
-                item.added |= 1U << age;
+                item.added |= 1U << currentFrame;
                 CONTENT_Equation add = null;
                 if (currentTree.Contains(item))
                 {
                     // this node is recursive, increase age and reset tree
-                    add = AddEquations(item, age + 1, null);
+                    add = AddEquations(item, currentFrame + 1, null);
                 }
                 else
                 {  
-                    add = AddEquations(item, age, currentTree);
+                    add = AddEquations(item, currentFrame, currentTree);
                 }
                 if (add != null)
                 {
@@ -84,6 +86,7 @@ public class CONTENT_NodeManager : MonoBehaviour
         }
         if (!nodes.Contains(node))
         {
+            node.current = new DataPointer(0, nodes.Count);
             nodes.Add(node);
         }
         var g = new GameObject(node.name + " (" + node.type.ToString() + ")");
@@ -91,27 +94,28 @@ public class CONTENT_NodeManager : MonoBehaviour
         e.type = node.type;
         e.input = input.ToArray();
 //        e.age = age;
-        e.Val = new DataPointer(age, node.index);
+        e.Val = new DataPointer(currentFrame, node.current.node);
         var _in = new DataPointer[e.input.Length];
         for (int i = 0; i < _in.Length; i++)
         {
             _in[i] = e.input[i].Val;
         }
+        e.In = _in;
 //        e.Out = node.
         equations.Add(e);
         node.equations.Add(e);
-        if (age == 0 && node.type == CONTENT_Node.Type.Input)
-        {
-            inputs.Add(node);
-        }
+//        if (age == 0 && node.type == CONTENT_Node.Type.Input)
+//        {
+//            inputs.Add(node);
+//        }
         return e;
     }
-    bool hasUpdated = false;
+//    bool hasUpdated = false;
     public void Update()
     {
-        if (!hasUpdated)
-        {
-            hasUpdated = true;
+//        if (!hasUpdated)
+//        {
+//            hasUpdated = true;
 
             for (int f = 0; f < frames.Length; f++)
             {
@@ -120,16 +124,20 @@ public class CONTENT_NodeManager : MonoBehaviour
                     frames[f].derivative[n] = 0;
                     if (nodes[n].type == CONTENT_Node.Type.Input)
                     {
-                        //frames[f].value[n] = 
+//                        print(f + " : " + n + " : " + nodes[n].value);
+                        frames[f].value[n] = nodes[n].value;
+//                    print(frames[f].value[n]);
+//                        frames[f].value[n] = 0.5f;
+//                        //frames[f].value[n] = 
                     }
                 }
             }
-            for (int i = 0; i < inputs.Count; i++)
-            {
-                frames[0].value[inputs[i].index] = inputs[i].value;
-//                frames[TotalFrames - 3].value[inputs[i].index] = inputs[i].value / 2f;
-//                frames[TotalFrames - 4].value[inputs[i].index] = inputs[i].value / -2f;
-            }
+//            for (int i = 0; i < inputs.Count; i++)
+//            {
+//                frames[0].value[inputs[i].index] = inputs[i].value;
+////                frames[TotalFrames - 3].value[inputs[i].index] = inputs[i].value / 2f;
+////                frames[TotalFrames - 4].value[inputs[i].index] = inputs[i].value / -2f;
+//            }
             for (int i = 0; i < equations.Count; i++)
             {
                 var e = equations[i];
@@ -140,7 +148,7 @@ public class CONTENT_NodeManager : MonoBehaviour
             {
                 equations[i].backward();
             }
-        }
+//        }
     }
 
     static CONTENT_NodeManager _inst;

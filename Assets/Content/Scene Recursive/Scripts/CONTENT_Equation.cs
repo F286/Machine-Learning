@@ -13,10 +13,16 @@ public class CONTENT_Equation : MonoBehaviour
 
     public void forward()
     {
-        Val.value = 0;
+//        Val.value = 0;
         switch (type)
         {
             case CONTENT_Node.Type.Add:
+                Val.value = 0;
+                print(In);
+                for (int i = 0; i < In.Length; i++)
+                {
+                    Val.value += In[i].value;
+                }
                 break;
             case CONTENT_Node.Type.Subtract:
                 break;
@@ -31,6 +37,7 @@ public class CONTENT_Equation : MonoBehaviour
             case CONTENT_Node.Type.Value:
                 break;
             case CONTENT_Node.Type.Input:
+//                Val.value = 
                 break;
         }
     }

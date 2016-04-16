@@ -16,12 +16,25 @@ public class CONTENT_Node : MonoBehaviour
         Value,
         Input,
     }
+    [Header("Basic")]
     public Type type;
-    public float value;
-    public float derivative;
+    public double value;
+    public double derivative;
+    [Header("Advanced")]
     public List<CONTENT_Node> input;
     public List<CONTENT_Node> output;
     public ulong added;
     public List<CONTENT_Equation> equations;
-    public int index;
+//    public int index;
+    public DataPointer current;
+
+    public void LateUpdate()
+    {
+        if (type != Type.Input)
+        {
+            value = current.value;
+        }
+        derivative = current.derivative;
+        
+    }
 }
