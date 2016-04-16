@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 5;
+    public const int TotalFrames = 1;
 
     [System.Serializable]
     public class Frame
@@ -36,7 +36,7 @@ public class CONTENT_NodeManager : MonoBehaviour
         frames = new Frame[TotalFrames];
         for (int i = 0; i < frames.Length; i++)
         {
-            frames[i] = new Frame(TotalFrames);
+            frames[i] = new Frame(nodes.Count);
         }
 
         for (int i = 0; i < nodes.Count; i++)
@@ -113,9 +113,20 @@ public class CONTENT_NodeManager : MonoBehaviour
         {
             hasUpdated = true;
 
+            for (int f = 0; f < frames.Length; f++)
+            {
+                for (int n = 0; n < nodes.Count; n++)
+                {
+                    frames[f].derivative[n] = 0;
+                    if (nodes[n].type == CONTENT_Node.Type.Input)
+                    {
+                        //frames[f].value[n] = 
+                    }
+                }
+            }
             for (int i = 0; i < inputs.Count; i++)
             {
-                frames[TotalFrames - 1].value[inputs[i].index] = inputs[i].value;
+                frames[0].value[inputs[i].index] = inputs[i].value;
 //                frames[TotalFrames - 3].value[inputs[i].index] = inputs[i].value / 2f;
 //                frames[TotalFrames - 4].value[inputs[i].index] = inputs[i].value / -2f;
             }

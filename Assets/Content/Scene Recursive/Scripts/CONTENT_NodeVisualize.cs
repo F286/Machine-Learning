@@ -36,7 +36,8 @@ public class CONTENT_NodeVisualize : MonoBehaviour
             sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v));
 
             var s = sprites[i].transform.localScale;
-            s.y = Core.Sigmoid((float)d);
+            s.y = Core.Sigmoid(Mathf.Abs((float)v) - 1.5f);
+//            s.y = Core.Sigmoid((float)d);
             sprites[i].transform.localScale = s;
         }
 //        for (int i = 0; i < node.equations.Count; i++)
