@@ -23,6 +23,7 @@ public class CONTENT_Node : MonoBehaviour
     [Header("Advanced")]
     public List<CONTENT_Node> input;
     public List<CONTENT_Node> output;
+    [HideInInspector()]
     public ulong added;
     public List<CONTENT_Equation> equations;
 //    public int index;
