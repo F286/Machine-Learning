@@ -7,6 +7,10 @@ public static class Core
     {
         return 1 / (1 + (float)System.Math.Exp(-v));
     }
+    public static double Sigmoid(double v)
+    {
+        return 1 / (1 + System.Math.Exp(-v));
+    }
     public static float Angle(this Vector3 v)
     {
         return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;

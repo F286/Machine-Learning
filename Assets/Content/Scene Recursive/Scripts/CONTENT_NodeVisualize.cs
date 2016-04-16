@@ -30,13 +30,17 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            var index = node.index;
 //            var v = CONTENT_NodeManager.instance.frames[i].value[index];
 //            var d = CONTENT_NodeManager.instance.frames[i].derivative[index];
-            var v = node.equations[i].Val.value;
-            var d = node.equations[i].Val.derivative;
+            var v = (float)node.equations[i].Val.value;
+            var d = (float)node.equations[i].Val.derivative;
 
             sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v));
 
             var s = sprites[i].transform.localScale;
-            s.y = Core.Sigmoid(Mathf.Abs((float)v) - 1.5f);
+            s.y = Core.Sigmoid(Mathf.Abs(v) - 1.5f);
+
+            var wiggle = Mathf.Sin(Time.time * 30 * d) * 0.5f + 0.5f;
+            s.y = s.y * 0.5f + (Core.Sigmoid(Mathf.Abs(d * 0.3f)) - 0.5f) * wiggle;
+
 //            s.y = Core.Sigmoid((float)d);
             sprites[i].transform.localScale = s;
         }

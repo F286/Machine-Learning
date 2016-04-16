@@ -37,6 +37,10 @@ public class CONTENT_NodeManager : MonoBehaviour
         for (int i = 0; i < frames.Length; i++)
         {
             frames[i] = new Frame(nodes.Count);
+            for (int n = 0; n < nodes.Count; n++) 
+            {
+                frames[i].value[n] = nodes[n].value;
+            }
         }
 
         for (int i = 0; i < nodes.Count; i++)
@@ -132,6 +136,7 @@ public class CONTENT_NodeManager : MonoBehaviour
                     }
                 }
             }
+        GameObject.FindWithTag("output").GetComponent<CONTENT_Node>().current.derivative = 1;
 //            for (int i = 0; i < inputs.Count; i++)
 //            {
 //                frames[0].value[inputs[i].index] = inputs[i].value;
