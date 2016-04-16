@@ -29,6 +29,10 @@ public class CONTENT_Equation : MonoBehaviour
                 {
                     Val.value *= In[i].value;
                 }
+                if (In.Length == 1)
+                {
+                    Val.value = 0;
+                }
                 break;
             case CONTENT_Node.Type.Divide:
                 break;

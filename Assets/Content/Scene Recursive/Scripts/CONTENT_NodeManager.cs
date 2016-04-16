@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 15;
+    public const int TotalFrames = 20;
     [System.Serializable]
     public class Frame
     {

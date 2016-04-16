@@ -39,7 +39,8 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v / 2f));
 
             var s = sprites[i].transform.localScale;
-            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 0.9f);
+            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 1.1f);
+//            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 0.9f);
 //            s.y = Core.Sigmoid(Mathf.Abs(v / 2f) - 1.5f);
 
             var wiggle = Mathf.Sin(Time.time * 70 * d);// * 0.5f + 0.5f;
@@ -49,7 +50,8 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            var wiggle = Mathf.Sin(Time.time * 20 * d);// * 0.5f + 0.5f;
             wiggle *= Core.Tanh(Mathf.Abs(d * 5)) * 0.064f * 0.3f;
 //            wiggle *= Mathf.Abs(d) * 0.055f;
-            s.y += 0.12f + wiggle;
+            s.y += 0.01f + wiggle;
+//            s.y += 0.12f + wiggle;
 //            s.y = 0.12f + s.y + d * 0.055f * wiggle;
 
 //            s.y = Core.Sigmoid((float)d);

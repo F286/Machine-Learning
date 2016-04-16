@@ -16,10 +16,17 @@ public class CONTENT_Node : MonoBehaviour
         Value,
         Input,
     }
+    [System.Serializable]
+    public class SetInput
+    {
+        public int frame = 0;
+        public float value;
+    }
     [Header("Basic")]
     public Type type;
     public double value;
     public double derivative;
+    public SetInput[] setInput; 
     [Header("Advanced")]
     public List<CONTENT_Node> input;
     public List<CONTENT_Node> output;
