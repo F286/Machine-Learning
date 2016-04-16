@@ -34,11 +34,12 @@ public class CONTENT_NodeVisualize : MonoBehaviour
             var d = (float)node.equations[i].Val.derivative;
             d = Core.Tanh(d);//.1f;
 
-            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 2f);
+            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 4f);
+//            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 2f);
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v / 2f));
 
             var s = sprites[i].transform.localScale;
-            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 1f);
+            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 0.9f);
 //            s.y = Core.Sigmoid(Mathf.Abs(v / 2f) - 1.5f);
 
             var wiggle = Mathf.Sin(Time.time * 70 * d);// * 0.5f + 0.5f;
