@@ -23,11 +23,12 @@ public class CONTENT_Node : MonoBehaviour
     [Header("Advanced")]
     public List<CONTENT_Node> input;
     public List<CONTENT_Node> output;
-    [HideInInspector()]
-    public ulong added;
+//    [HideInInspector()]
     public List<CONTENT_Equation> equations;
 //    public int index;
     public DataPointer current;
+    [Header("Internal")]
+    public ulong addedBitmask;
 
     public void LateUpdate()
     {

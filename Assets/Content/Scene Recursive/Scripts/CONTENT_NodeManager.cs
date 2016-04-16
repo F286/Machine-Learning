@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 10;
-
+    public const int TotalFrames = 2;
     [System.Serializable]
     public class Frame
     {
@@ -18,19 +17,13 @@ public class CONTENT_NodeManager : MonoBehaviour
             derivative = new double[length];
         }
     }
-
     public List<CONTENT_Node> nodes;
-//    public List<CONTENT_Node> inputs;
-//    public CONTENT_Node[] nodes;
     public Frame[] frames;
     public List<CONTENT_Equation> equations;
     public Gradient gradient;
 
     public void Start()
     {
-//        nodes = GameObject.FindObjectsOfType<CONTENT_Node>();
-//        var connect = GameObject.FindObjectsOfType<CONTENT_Connect>();
-
         AddEquations(GameObject.FindWithTag("output").GetComponent<CONTENT_Node>());
 
         frames = new Frame[TotalFrames];
@@ -42,49 +35,46 @@ public class CONTENT_NodeManager : MonoBehaviour
                 frames[i].value[n] = nodes[n].value;
             }
         }
-
         for (int i = 0; i < nodes.Count; i++)
         {
             var item = nodes[i];
-//            item.current = new DataPointer(0, nodes.Count);
-            var v = item.gameObject.AddComponent<CONTENT_NodeVisualize>();
-//            item.index = i;
-
+            item.gameObject.AddComponent<CONTENT_NodeVisualize>();
         }
     }
 
     CONTENT_Equation AddEquations(CONTENT_Node node, int currentFrame = 0, List<CONTENT_Node> currentTree = null)
     {
-        if (currentFrame >= TotalFrames)
+        if ((node.addedBitmask & (1U << currentFrame)) != 0)
         {
             return null;
         }
+        node.addedBitmask |= 1U << currentFrame;
         if (currentTree == null)
         {
             currentTree = new List<CONTENT_Node>();
         }
         currentTree.Add(node);
-//        CONTENT_Equation[] input = new CONTENT_Equation[node.input.Count];
-        List<CONTENT_Equation> input = new List<CONTENT_Equation>();
+        List<DataPointer> _input = new List<DataPointer>();
+
+        print("--- " + node);
+
         for (int i = 0; i < node.input.Count; i++)
         {
             var item = node.input[i];
-            if ((item.added & 1U << currentFrame) == 0)
+            if (currentTree.Contains(item) && currentFrame + 1 < TotalFrames)
             {
-                item.added |= 1U << currentFrame;
-                CONTENT_Equation add = null;
-                if (currentTree.Contains(item))
+                var e = AddEquations(item, currentFrame + 1, null);
+                if (e)
                 {
-                    // this node is recursive, increase age and reset tree
-                    add = AddEquations(item, currentFrame + 1, null);
+                    _input.Add(e.Val);
                 }
-                else
-                {  
-                    add = AddEquations(item, currentFrame, currentTree);
-                }
-                if (add != null)
+            }
+            else
+            {
+                var e = AddEquations(item, currentFrame, currentTree);
+                if (e)
                 {
-                    input.Add(add);
+                    _input.Add(e.Val);
                 }
             }
         }
@@ -93,26 +83,18 @@ public class CONTENT_NodeManager : MonoBehaviour
             node.current = new DataPointer(0, nodes.Count);
             nodes.Add(node);
         }
-        var g = new GameObject(node.name + " (" + node.type.ToString() + ")");
-        var e = g.AddComponent<CONTENT_Equation>();
-        e.type = node.type;
-        e.input = input.ToArray();
-//        e.age = age;
-        e.Val = new DataPointer(currentFrame, node.current.node);
-        var _in = new DataPointer[e.input.Length];
-        for (int i = 0; i < _in.Length; i++)
         {
-            _in[i] = e.input[i].Val;
+            var g = new GameObject(node.name + " (" + node.type.ToString() + ")  f " + currentFrame + "  n " + node.current.node);
+            print(g.name);
+            print(_input.Count);
+            var e = g.AddComponent<CONTENT_Equation>();
+            e.type = node.type;
+            e.Val = new DataPointer(currentFrame, node.current.node);
+            e.In = _input.ToArray();
+            equations.Add(e);
+            node.equations.Add(e);
+            return e;
         }
-        e.In = _in;
-//        e.Out = node.
-        equations.Add(e);
-        node.equations.Add(e);
-//        if (age == 0 && node.type == CONTENT_Node.Type.Input)
-//        {
-//            inputs.Add(node);
-//        }
-        return e;
     }
 //    bool hasUpdated = false;
     public void Update()

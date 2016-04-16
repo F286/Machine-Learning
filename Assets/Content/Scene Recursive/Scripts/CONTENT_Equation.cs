@@ -4,10 +4,10 @@ using System.Collections;
 public class CONTENT_Equation : MonoBehaviour 
 {
     public CONTENT_Node.Type type;
-    public CONTENT_Equation[] input;
+//    public CONTENT_Equation[] input;
     public DataPointer[] In;
     public DataPointer Val;
-    public double value;
+//    public double value;
 
     public void forward()
     {
@@ -82,9 +82,10 @@ public class CONTENT_Equation : MonoBehaviour
                     {
                         if (a != b)
                         {
-                            d *= In[b].derivative;
+                            d *= In[b].value;
                         }
                     }
+//                    print(d);
                     In[a].derivative += d;
                 }
 //                Val.value = 1;
@@ -120,5 +121,15 @@ public class CONTENT_Equation : MonoBehaviour
     public void train(float step)
     {
 
+    }
+
+    [Header("Debug")]
+    public double debugValue;
+    public double debugDerivative;
+
+    public void LateUpdate()
+    {
+        debugValue = Val.value;
+        debugDerivative = Val.derivative;
     }
 }
