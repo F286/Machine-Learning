@@ -32,6 +32,7 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            var d = CONTENT_NodeManager.instance.frames[i].derivative[index];
             var v = (float)node.equations[i].Val.value;
             var d = (float)node.equations[i].Val.derivative;
+            d = Core.Tanh(d);//.1f;
 
             sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 2f);
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v / 2f));
@@ -40,11 +41,22 @@ public class CONTENT_NodeVisualize : MonoBehaviour
             s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 1f);
 //            s.y = Core.Sigmoid(Mathf.Abs(v / 2f) - 1.5f);
 
-            var wiggle = Mathf.Sin(Time.time * 20 * d);// * 0.5f + 0.5f;
-            s.y = 0.12f + s.y + d * 0.05f * wiggle;
+            var wiggle = Mathf.Sin(Time.time * 70 * d);// * 0.5f + 0.5f;
+//            var wiggle = Mathf.Sin(Time.time * 25);// * 0.5f + 0.5f;
+//            var wiggle = Mathf.Sin(Time.time * 15);// * 0.5f + 0.5f;
+//            var wiggle = Mathf.Sin(Time.time * 20);// * 0.5f + 0.5f;
+//            var wiggle = Mathf.Sin(Time.time * 20 * d);// * 0.5f + 0.5f;
+            wiggle *= Core.Tanh(Mathf.Abs(d * 5)) * 0.064f * 0.3f;
+//            wiggle *= Mathf.Abs(d) * 0.055f;
+            s.y += 0.12f + wiggle;
+//            s.y = 0.12f + s.y + d * 0.055f * wiggle;
 
 //            s.y = Core.Sigmoid((float)d);
             sprites[i].transform.localScale = s;
+
+            var p = sprites[i].transform.localPosition;
+            p.y = wiggle * 0.5f * Mathf.Sign(d);
+            sprites[i].transform.localPosition = p;
         }
 //        for (int i = 0; i < node.equations.Count; i++)
 //        {

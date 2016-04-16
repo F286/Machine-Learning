@@ -3,6 +3,14 @@ using System.Collections;
 
 public static class Core 
 {
+    public static float Tanh(float v)
+    {
+        return (float)System.Math.Tanh(v);
+    }
+    public static double Tanh(double v)
+    {
+        return System.Math.Tanh(v);
+    }
     public static float Sigmoid(float v)
     {
         return 1 / (1 + (float)System.Math.Exp(-v));

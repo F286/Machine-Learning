@@ -26,5 +26,30 @@ public class CONTENT_Connect : MonoBehaviour
         g.transform.localScale = new Vector3(0.25f, 0.25f, 1);
         g.transform.rotation = Quaternion.Euler(0, 0, (b.transform.position - a.transform.position).Angle());
 //        sprites.Add(g.GetComponent<SpriteRenderer>());
+
+        switch (GetComponent<CONTENT_Node>().type)
+        {
+            case CONTENT_Node.Type.Add:
+                g.GetComponent<SpriteRenderer>().color *= Color.yellow;
+            break;
+            case CONTENT_Node.Type.Subtract:
+            break;
+            case CONTENT_Node.Type.Multiply:
+                g.GetComponent<SpriteRenderer>().color *= Color.red;
+            break;
+            case CONTENT_Node.Type.Divide:
+            break;
+            case CONTENT_Node.Type.Sigmoid:
+                g.GetComponent<SpriteRenderer>().color *= Color.green;
+            break;
+            case CONTENT_Node.Type.Tanh:
+                g.GetComponent<SpriteRenderer>().color *= Color.magenta;
+            break;
+            case CONTENT_Node.Type.Value:
+//                g.GetComponent<SpriteRenderer>().color *= Color.green;
+            break;
+            case CONTENT_Node.Type.Input:
+            break;
+        }
     }
 }
