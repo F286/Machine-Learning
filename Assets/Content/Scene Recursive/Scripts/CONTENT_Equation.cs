@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Assertions;
 
 public class CONTENT_Equation : MonoBehaviour 
 {
@@ -48,6 +49,7 @@ public class CONTENT_Equation : MonoBehaviour
                 Val.value = System.Math.Tanh(Val.value);
                 break;
             case CONTENT_Node.Type.Value:
+                Assert.IsTrue(true, "A value should not have any inputs, it should never be evaluated directly. It just stores a number, derivative.");
                 break;
             case CONTENT_Node.Type.Input:
                 break;
