@@ -10,6 +10,7 @@ public class CONTENT_NodeVisualize : MonoBehaviour
     public void Awake()
     {
         node = GetComponent<CONTENT_Node>();
+        node.equations.Sort((x, y) => y.Val.frame - x.Val.frame);
         var size = 1f / node.equations.Count;
         for (int i = 0; i < node.equations.Count; i++)
         {
@@ -48,7 +49,9 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            var wiggle = Mathf.Sin(Time.time * 15);// * 0.5f + 0.5f;
 //            var wiggle = Mathf.Sin(Time.time * 20);// * 0.5f + 0.5f;
 //            var wiggle = Mathf.Sin(Time.time * 20 * d);// * 0.5f + 0.5f;
-            wiggle *= Core.Tanh(Mathf.Abs(d * 5)) * 0.064f * 0.3f;
+//            wiggle *= Core.Tanh(Mathf.Abs(d * 5)) * 0.064f * 0.3f;
+            wiggle *= Core.Tanh(Mathf.Abs(d * 6)) * 0.064f * 0.3f ;
+//            wiggle *= Core.Tanh(Mathf.Abs(d * 5)) * 0.064f * 0.3f ;
 //            wiggle *= Mathf.Abs(d) * 0.055f;
             s.y += 0.01f + wiggle;
 //            s.y += 0.12f + wiggle;

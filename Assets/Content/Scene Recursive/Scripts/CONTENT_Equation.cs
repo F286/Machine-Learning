@@ -103,6 +103,17 @@ public class CONTENT_Equation : MonoBehaviour
             case CONTENT_Node.Type.Divide:
                 break;
             case CONTENT_Node.Type.Sigmoid:
+                var s = 0d;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    s += In[i].value;
+                }
+                s = Core.Sigmoid(s);
+                s = s * (1 - s) * Val.derivative;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    In[i].derivative += s;
+                }
 //                Val.value = 0;
 //                for (int i = 0; i < In.Length; i++)
 //                {

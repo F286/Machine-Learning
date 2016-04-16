@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 20;
+    public const int TotalFrames = 18;
     [System.Serializable]
     public class Frame
     {
@@ -30,7 +30,7 @@ public class CONTENT_NodeManager : MonoBehaviour
         for (int i = 0; i < frames.Length; i++)
         {
             frames[i] = new Frame(nodes.Count);
-            for (int n = 0; n < nodes.Count; n++) 
+            for (int n = 0; n < nodes.Count; n++)
             {
                 frames[i].value[n] = nodes[n].value;
             }
@@ -108,21 +108,37 @@ public class CONTENT_NodeManager : MonoBehaviour
 //        {
 //            hasUpdated = true;
 
-            for (int f = 0; f < frames.Length; f++)
+        for (int f = 0; f < frames.Length; f++)
+        {
+            for (int n = 0; n < nodes.Count; n++)
             {
-                for (int n = 0; n < nodes.Count; n++)
+                frames[f].derivative[n] = 0;
+//                if (nodes[n].type == CONTENT_Node.Type.Input)
+//                {
+////                        print(f + " : " + n + " : " + nodes[n].value);
+//                    frames[f].value[n] = nodes[n].value;
+////                    print(frames[f].value[n]);
+////                        frames[f].value[n] = 0.5f;
+////                        //frames[f].value[n] = 
+//                }
+            }
+        }
+        for (int n = 0; n < nodes.Count; n++)
+        {
+            if (nodes[n].type == CONTENT_Node.Type.Input)
+            {
+                for (int f = 0; f < TotalFrames; f++)
                 {
-                    frames[f].derivative[n] = 0;
-                    if (nodes[n].type == CONTENT_Node.Type.Input)
-                    {
-//                        print(f + " : " + n + " : " + nodes[n].value);
-                        frames[f].value[n] = nodes[n].value;
-//                    print(frames[f].value[n]);
-//                        frames[f].value[n] = 0.5f;
-//                        //frames[f].value[n] = 
-                    }
+                    frames[f].value[n] = nodes[n].value;
+                }
+                for (int s = 0; s < nodes[n].setInput.Length; s++)
+                {
+                    var f = TotalFrames - 1 - nodes[n].setInput[s].frame;
+                    f = Mathf.Clamp(f, 0, TotalFrames - 1);
+                    frames[f].value[n] = nodes[n].setInput[s].value;
                 }
             }
+        }
         GameObject.FindWithTag("output").GetComponent<CONTENT_Node>().current.derivative = 1;
 //            for (int i = 0; i < inputs.Count; i++)
 //            {
