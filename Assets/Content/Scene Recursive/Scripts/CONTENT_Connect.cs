@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.Assertions;
 
-[RequireComponent(typeof(CONTENT_Node))]
+//[RequireComponent(typeof(CONTENT_Node))]
 public class CONTENT_Connect : MonoBehaviour 
 {
     public CONTENT_Node from;
@@ -22,6 +22,7 @@ public class CONTENT_Connect : MonoBehaviour
             from = set;
         }
         Assert.IsTrue(from != null, "on CONTENT_Connect 'from' must be set.");
+        Assert.IsTrue(gameObject.GetComponent<CONTENT_Node>() != null, "CONTENT_Connect must have a CONTENT_Node on it.");
 
         gameObject.GetComponent<CONTENT_Node>().input.Add(from);
         from.output.Add(gameObject.GetComponent<CONTENT_Node>());

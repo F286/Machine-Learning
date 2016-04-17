@@ -25,13 +25,13 @@ public class CONTENT_Node : MonoBehaviour
     [Header("Basic")]
     public Type type;
     public double value;
-    public double[] derivative;
+    public double[] derivative = new double[0];
     public SetInput[] setInput; 
     [Header("Advanced")]
-    public List<CONTENT_Node> input;
-    public List<CONTENT_Node> output;
+    public List<CONTENT_Node> input = new List<CONTENT_Node>();
+    public List<CONTENT_Node> output = new List<CONTENT_Node>();
 //    [HideInInspector()]
-    public List<CONTENT_Equation> equations;
+    public List<CONTENT_Equation> equations = new List<CONTENT_Equation>();
 //    public int index;
     public DataPointer current;
     [Header("Internal")]
