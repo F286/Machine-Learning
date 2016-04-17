@@ -136,10 +136,10 @@ public class CONTENT_Equation : MonoBehaviour
                 break;
         }
     }
-    public void train(float step)
-    {
-
-    }
+//    public void train(float step)
+//    {
+//
+//    }
 
     [Header("Debug")]
     public double debugValue;

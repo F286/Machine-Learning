@@ -114,6 +114,7 @@ public class CONTENT_NodeManager : MonoBehaviour
 //        if (!hasUpdated)
 //        {
 //            hasUpdated = true;
+        var o = GameObject.FindWithTag("output").GetComponent<CONTENT_Node>();
 
         for (int f = 0; f < frames.Length; f++)
         {
@@ -146,7 +147,7 @@ public class CONTENT_NodeManager : MonoBehaviour
                 }
             }
         }
-        GameObject.FindWithTag("output").GetComponent<CONTENT_Node>().current.derivative = 1;
+        o.current.derivative = 1;
 //            for (int i = 0; i < inputs.Count; i++)
 //            {
 //                frames[0].value[inputs[i].index] = inputs[i].value;
@@ -164,6 +165,20 @@ public class CONTENT_NodeManager : MonoBehaviour
                 equations[i].backward();
             }
 //        }
+        var error = o.value - System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 30.0));
+        error = -error;
+        print(error);
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (nodes[i].type == CONTENT_Node.Type.Value)
+            {
+                for (int j = 0; j < nodes[i].derivative.Length; j++) 
+                {
+                    nodes[i].current.value += nodes[i].derivative[j] * error * 0.001;
+//                    nodes[i].value += nodes[i].derivative[j] * error * 0.001;
+                }
+            }
+        }
     }
 
     static CONTENT_NodeManager _inst;
