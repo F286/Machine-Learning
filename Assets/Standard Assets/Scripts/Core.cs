@@ -1,8 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public static class Core 
 {
+    public static IEnumerable<GameObject> FindInChildrenWithTag(this GameObject g, string tag)
+    {
+        foreach (var item in g.GetComponentsInChildren<Transform>())
+        {
+            if (item.CompareTag(tag))
+            {
+                yield return item.gameObject;
+            }
+        }
+    }
     public static float Tanh(float v)
     {
         return (float)System.Math.Tanh(v);

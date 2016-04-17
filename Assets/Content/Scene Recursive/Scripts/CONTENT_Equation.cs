@@ -110,6 +110,7 @@ public class CONTENT_Equation : MonoBehaviour
                 }
                 s = Core.Sigmoid(s);
                 s = s * (1 - s) * Val.derivative;
+                s *= 4;
                 for (int i = 0; i < In.Length; i++)
                 {
                     In[i].derivative += s;

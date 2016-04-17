@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
@@ -24,7 +25,12 @@ public class CONTENT_NodeManager : MonoBehaviour
 
     public void Start()
     {
-        AddEquations(GameObject.FindWithTag("output").GetComponent<CONTENT_Node>());
+        var o = GameObject.FindWithTag("output");
+//        print(o.GetComponent<CONTENT_Node>());
+
+        Assert.IsTrue(o != null, "Node with tag 'output' must be set.");
+        Assert.IsTrue(o.GetComponent<CONTENT_Node>() != null, "Node with tag 'output' must have a CONTENT_Node attached.");
+        AddEquations(o.GetComponent<CONTENT_Node>());
 
         frames = new Frame[TotalFrames];
         for (int i = 0; i < frames.Length; i++)
@@ -56,7 +62,7 @@ public class CONTENT_NodeManager : MonoBehaviour
         currentTree.Add(node);
         List<DataPointer> _input = new List<DataPointer>();
 
-        print("--- " + node);
+//        print("--- " + node);
 
         for (int i = 0; i < node.input.Count; i++)
         {
@@ -90,7 +96,7 @@ public class CONTENT_NodeManager : MonoBehaviour
         }
         {
             var g = new GameObject(node.name + " (" + node.type.ToString() + ")  f " + currentFrame + "  n " + node.current.node + "  i " + _input.Count);
-            print(g.name);
+//            print(g.name);
 //            print(_input.Count);
             var e = g.AddComponent<CONTENT_Equation>();
             e.type = node.type;

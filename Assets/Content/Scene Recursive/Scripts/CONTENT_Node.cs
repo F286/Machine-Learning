@@ -25,7 +25,7 @@ public class CONTENT_Node : MonoBehaviour
     [Header("Basic")]
     public Type type;
     public double value;
-    public double derivative;
+    public double[] derivative;
     public SetInput[] setInput; 
     [Header("Advanced")]
     public List<CONTENT_Node> input;
@@ -43,7 +43,17 @@ public class CONTENT_Node : MonoBehaviour
         {
             value = current.value;
         }
-        derivative = current.derivative;
+        if (derivative.Length != CONTENT_NodeManager.TotalFrames)
+        {
+            derivative = new double[CONTENT_NodeManager.TotalFrames];
+        }
+        for (int i = 0; i < derivative.Length; i++)
+        {
+            var s = current;
+            s.frame = i;
+            derivative[i] = s.derivative;
+        }
+//        derivative = current.derivative;
         
     }
 }

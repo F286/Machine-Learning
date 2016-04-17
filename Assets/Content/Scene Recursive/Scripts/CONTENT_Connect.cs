@@ -7,8 +7,20 @@ public class CONTENT_Connect : MonoBehaviour
 {
     public CONTENT_Node from;
 
+    static CONTENT_Node set;
+    public static void Create(GameObject g, CONTENT_Node _from)
+    {
+        set = _from;
+        g.AddComponent<CONTENT_Connect>();
+        set = null;
+    }
+
     public void Awake()
     {
+        if (set)
+        {
+            from = set;
+        }
         Assert.IsTrue(from != null, "on CONTENT_Connect 'from' must be set.");
 
         gameObject.GetComponent<CONTENT_Node>().input.Add(from);
