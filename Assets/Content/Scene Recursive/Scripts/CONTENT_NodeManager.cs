@@ -26,6 +26,8 @@ public class CONTENT_NodeManager : MonoBehaviour
 
     public void Start()
     {
+        Random.InitState(0);
+
         var o = GameObject.FindWithTag("output");
 //        print(o.GetComponent<CONTENT_Node>());
 
@@ -40,7 +42,8 @@ public class CONTENT_NodeManager : MonoBehaviour
             for (int n = 0; n < nodes.Count; n++)
             {
                 frames[i].value[n] = nodes[n].value;
-                frames[i].value[n] = Random.Range(-0.5f, 0.5f);
+                frames[i].value[n] = Random.Range(-3f, 3f);
+//                frames[i].value[n] = Random.Range(-0.5f, 0.5f);
             }
         }
         for (int i = 0; i < nodes.Count; i++)

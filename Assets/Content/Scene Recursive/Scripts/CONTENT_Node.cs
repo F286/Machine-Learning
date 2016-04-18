@@ -37,6 +37,8 @@ public class CONTENT_Node : MonoBehaviour
     [Header("Internal")]
     public ulong addedBitmask;
 
+    public bool displayDerivative = true;
+
 //    public void Start()
 //    {
 //        if (type == Type.Input)

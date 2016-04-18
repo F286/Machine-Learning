@@ -35,7 +35,14 @@ public class CONTENT_NodeVisualize : MonoBehaviour
             var d = (float)node.equations[i].Val.derivative;
             d = Core.Tanh(d);//.1f;
 
-            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 4f);
+            if (!GetComponent<CONTENT_Node>().displayDerivative)
+            {
+                d = 0;
+            }
+
+            var c = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 4f);
+//            c.a = 0.9f;
+            sprites[i].color = c;
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(0.5f + v / 2f);
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v / 2f));
 
