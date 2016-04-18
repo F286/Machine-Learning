@@ -51,7 +51,7 @@ public class CONTENT_ManagerNeuron : MonoBehaviour
         {
             return;
         }
-        Random.InitState(0);
+//        Random.InitState(0);
 
 //        return;
         points = new List<Transform>();
