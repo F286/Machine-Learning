@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CONTENT_NodeValue : Node
+public class CONTENT_NodeValue : Node, IOnInteract
 {
     public double _value;
     public double _derivative;
@@ -25,5 +25,10 @@ public class CONTENT_NodeValue : Node
             _value += derivative * step;
 //            _value += derivative * System.Math.Abs(derivative) * step;
         }
+    }
+
+    public void OnInteract(InteractData eventData)
+    {
+        _value += (eventData.deltaPosition.x + eventData.deltaPosition.y) / 2.5f;
     }
 }

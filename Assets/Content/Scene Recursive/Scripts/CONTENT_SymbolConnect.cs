@@ -43,4 +43,7 @@ public class CONTENT_SymbolConnect : MonoBehaviour
             }
         }
     }
+    public void Start()
+    {
+    }
 }

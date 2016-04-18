@@ -37,6 +37,14 @@ public class CONTENT_Node : MonoBehaviour
     [Header("Internal")]
     public ulong addedBitmask;
 
+//    public void Start()
+//    {
+//        if (type == Type.Input)
+//        {
+//            value = Random.Range(-0.5f, 0.5f);
+//        }
+//    }
+
     public void LateUpdate()
     {
         if (type != Type.Input)

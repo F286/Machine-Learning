@@ -40,6 +40,7 @@ public class CONTENT_NodeManager : MonoBehaviour
             for (int n = 0; n < nodes.Count; n++)
             {
                 frames[i].value[n] = nodes[n].value;
+                frames[i].value[n] = Random.Range(-0.5f, 0.5f);
             }
         }
         for (int i = 0; i < nodes.Count; i++)
@@ -165,19 +166,24 @@ public class CONTENT_NodeManager : MonoBehaviour
                 equations[i].backward();
             }
 //        }
-        var error = o.value - System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 30.0));
-        error = -error;
-        print(error);
-        for (int i = 0; i < nodes.Count; i++)
+//        var error = o.value - System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 30.0));
+//        error = -error;
+//        print(error);
+//        for (int i = 0; i < nodes.Count; i++)
+//        {
+//            if (nodes[i].type == CONTENT_Node.Type.Value)
+//            {
+//                for (int j = 0; j < nodes[i].derivative.Length; j++) 
+//                {
+//                    nodes[i].current.value += nodes[i].derivative[j] * error * 0.000001;
+////                    nodes[i].value += nodes[i].derivative[j] * error * 0.001;
+//                }
+//            }
+//        }
+        for (int i = frames.Length - 1; i > 0; i--)
         {
-            if (nodes[i].type == CONTENT_Node.Type.Value)
-            {
-                for (int j = 0; j < nodes[i].derivative.Length; j++) 
-                {
-                    nodes[i].current.value += nodes[i].derivative[j] * error * 0.001;
-//                    nodes[i].value += nodes[i].derivative[j] * error * 0.001;
-                }
-            }
+            frames[i].value = frames[i - 1].value;
+            frames[i].derivative = frames[i - 1].derivative;
         }
     }
 
