@@ -21,8 +21,8 @@ public class CONTENT_Connect : MonoBehaviour
         {
             from = set;
         }
-        Assert.IsTrue(from != null, "on CONTENT_Connect 'from' must be set.");
-        Assert.IsTrue(gameObject.GetComponent<CONTENT_Node>() != null, "CONTENT_Connect must have a CONTENT_Node on it.");
+        Assert.IsTrue(from != null, gameObject.name + " : on CONTENT_Connect 'from' must be set.");
+        Assert.IsTrue(gameObject.GetComponent<CONTENT_Node>() != null, gameObject.name +" : CONTENT_Connect must have a CONTENT_Node on it.");
 
         gameObject.GetComponent<CONTENT_Node>().input.Add(from);
         from.output.Add(gameObject.GetComponent<CONTENT_Node>());

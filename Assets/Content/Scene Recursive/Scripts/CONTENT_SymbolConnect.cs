@@ -9,12 +9,12 @@ public class CONTENT_SymbolConnect : MonoBehaviour
     {
 //        print("connect");
         var inIndex = 0;
-        foreach (var _in in gameObject.FindInChildrenWithTag("in"))
+        foreach (var _in in gameObject.FindInChildrenWithName("IN"))
         {
             inIndex++;
             var outIndex = 0;
 //            print(_in);
-            foreach (var _out in from.FindInChildrenWithTag("out")) 
+            foreach (var _out in from.FindInChildrenWithName("OUT")) 
             {
                 outIndex++;
                 //                print(_out);

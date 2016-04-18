@@ -14,6 +14,32 @@ public static class Core
             }
         }
     }
+    public static IEnumerable<GameObject> FindInChildrenWithTag(this GameObject g, params string[] tag)
+    {
+        foreach (var item in g.GetComponentsInChildren<Transform>())
+        {
+            for (int i = 0; i < tag.Length; i++)
+            {
+                if (item.CompareTag(tag[i]))
+                {
+                    yield return item.gameObject;
+                }
+            }
+        }
+    }
+    public static IEnumerable<GameObject> FindInChildrenWithName(this GameObject g, params string[] n)
+    {
+        foreach (var item in g.GetComponentsInChildren<Transform>())
+        {
+            for (int i = 0; i < n.Length; i++)
+            {
+                if (item.name.Contains(n[i]))
+                {
+                    yield return item.gameObject;
+                }
+            }
+        }
+    }
     public static float Tanh(float v)
     {
         return (float)System.Math.Tanh(v);

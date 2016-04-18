@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 50;
+    public const int TotalFrames = 10;
 //    public const int TotalFrames = 18;
     [System.Serializable]
     public class Frame
