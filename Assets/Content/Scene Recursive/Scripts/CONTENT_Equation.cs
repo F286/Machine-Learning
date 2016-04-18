@@ -22,6 +22,18 @@ public class CONTENT_Equation : MonoBehaviour
                 }
                 break;
             case CONTENT_Node.Type.Subtract:
+                Val.value = 0;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        Val.value += In[i].value;
+                    }
+                    else
+                    {
+                        Val.value -= In[i].value;
+                    }
+                }
                 break;
             case CONTENT_Node.Type.Multiply:
                 Val.value = 1;
@@ -79,6 +91,17 @@ public class CONTENT_Equation : MonoBehaviour
 //                }
                 break;
             case CONTENT_Node.Type.Subtract:
+                for (int i = 0; i < In.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        In[i].derivative += Val.derivative;
+                    }
+                    else
+                    {
+                        In[i].derivative -= Val.derivative;
+                    }
+                }
                 break;
             case CONTENT_Node.Type.Multiply:
                 for (int a = 0; a < In.Length; a++)
@@ -110,7 +133,7 @@ public class CONTENT_Equation : MonoBehaviour
                 }
                 s = Core.Sigmoid(s);
                 s = s * (1 - s) * Val.derivative;
-                s *= 4;
+//                s *= 4;
                 for (int i = 0; i < In.Length; i++)
                 {
                     In[i].derivative += s;

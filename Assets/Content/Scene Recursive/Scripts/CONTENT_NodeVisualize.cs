@@ -10,15 +10,15 @@ public class CONTENT_NodeVisualize : MonoBehaviour
     public void Awake()
     {
         node = GetComponent<CONTENT_Node>();
-        node.equations.Sort((x, y) => y.Val.frame - x.Val.frame);
-        var size = 1f / node.equations.Count;
-        for (int i = 0; i < node.equations.Count; i++)
+//        node.equations.Sort((x, y) => y.Val.frame - x.Val.frame);
+        var size = 1f / CONTENT_NodeManager.TotalFrames;
+        for (int i = 0; i < CONTENT_NodeManager.TotalFrames; i++)
         {
             var g = new GameObject("visualize", typeof(SpriteRenderer));
             g.GetComponent<SpriteRenderer>().sprite = Instantiate(Resources.Load<Sprite>("Visualize"));
             g.transform.SetParent(node.transform, false);
             g.GetComponent<SpriteRenderer>().color = CONTENT_NodeManager.instance.gradient.Evaluate(Random.value);
-            g.transform.localPosition = new Vector2(-0.5f + size * i, 0);
+            g.transform.localPosition = new Vector2(-(-0.5f + size * i), 0);
             g.transform.localScale = new Vector3(size, 1, 1);
             sprites.Add(g.GetComponent<SpriteRenderer>());
         }
@@ -26,13 +26,13 @@ public class CONTENT_NodeVisualize : MonoBehaviour
     public void LateUpdate()
     {
         
-        for (int i = 0; i < node.equations.Count; i++)
+        for (int i = 0; i < CONTENT_NodeManager.TotalFrames; i++)
         {
 //            var index = node.index;
-//            var v = CONTENT_NodeManager.instance.frames[i].value[index];
-//            var d = CONTENT_NodeManager.instance.frames[i].derivative[index];
-            var v = (float)node.equations[i].Val.value;
-            var d = (float)node.equations[i].Val.derivative;
+            var v = (float)CONTENT_NodeManager.instance.frames[i].value[node.current.node];
+            var d = (float)CONTENT_NodeManager.instance.frames[i].derivative[node.current.node];
+//            var v = (float)node.equations[i].Val.value;
+//            var d = (float)node.equations[i].Val.derivative;
             d = Core.Tanh(d);//.1f;
 
             if (!GetComponent<CONTENT_Node>().displayDerivative)
@@ -72,9 +72,5 @@ public class CONTENT_NodeVisualize : MonoBehaviour
             p.y = wiggle * 0.5f * Mathf.Sign(d);
             sprites[i].transform.localPosition = p;
         }
-//        for (int i = 0; i < node.equations.Count; i++)
-//        {
-//            CONTENT_NodeManager.FrameData
-//        }
     }
 }

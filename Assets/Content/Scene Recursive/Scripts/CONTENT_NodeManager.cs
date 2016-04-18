@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 public class CONTENT_NodeManager : MonoBehaviour
 {
-    public const int TotalFrames = 10;
+    public const int TotalFrames = 32;
 //    public const int TotalFrames = 18;
     [System.Serializable]
     public class Frame
@@ -42,7 +42,9 @@ public class CONTENT_NodeManager : MonoBehaviour
             for (int n = 0; n < nodes.Count; n++)
             {
                 frames[i].value[n] = nodes[n].value;
-                frames[i].value[n] = Random.Range(-3f, 3f);
+//                frames[i].value[n] = Random.Range(-0.1f, 0.1f);
+                frames[i].value[n] = 1;
+//                frames[i].value[n] = Random.Range(-3f, 3f);
 //                frames[i].value[n] = Random.Range(-0.5f, 0.5f);
             }
         }
@@ -112,9 +114,34 @@ public class CONTENT_NodeManager : MonoBehaviour
             return e;
         }
     }
+    public CONTENT_Node[] input;
 //    bool hasUpdated = false;
+    public bool train = true;
+    public double trainRate = 0.00001f;
     public void Update()
     {
+//        frames[6].value = frames[5].value;
+//        frames[5].value = frames[4].value;
+//                frames[4].value = frames[3].value;
+//        frames[3].value = frames[2].value;
+        //        frames[2].value = frames[1].value;
+//        frames[8].value = frames[4].value;
+        //        frames[4].value = frames[0].value;
+        for (int i = 0; i < input.Length; i++)
+        {
+            input[i].current.value = System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 60.0) * 2);
+            //            input[i].value = System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 60.0));
+        }
+        for (int f = TotalFrames - 1; f > 0; f--)
+        {
+            for (int v = 0; v < frames[f].value.Length; v++) 
+            {
+                frames[f].value[v] = frames[f - 1].value[v];
+            }
+//            frames[i].value = frames[i - 1].value;
+//            frames[i].value = Random.value;
+        }
+//        return;
 //        if (!hasUpdated)
 //        {
 //            hasUpdated = true;
@@ -135,22 +162,23 @@ public class CONTENT_NodeManager : MonoBehaviour
 //                }
             }
         }
-        for (int n = 0; n < nodes.Count; n++)
-        {
-            if (nodes[n].type == CONTENT_Node.Type.Input)
-            {
-                for (int f = 0; f < TotalFrames; f++)
-                {
-                    frames[f].value[n] = nodes[n].value;
-                }
-                for (int s = 0; s < nodes[n].setInput.Length; s++)
-                {
-                    var f = TotalFrames - 1 - nodes[n].setInput[s].frame;
-                    f = Mathf.Clamp(f, 0, TotalFrames - 1);
-                    frames[f].value[n] = nodes[n].setInput[s].value;
-                }
-            }
-        }
+//        for (int n = 0; n < nodes.Count; n++)
+//        {
+//            if (nodes[n].type == CONTENT_Node.Type.Input)
+//            {
+//                frames[TotalFrames - 1].value[n] = nodes[n].value;
+////                for (int f = 0; f < TotalFrames; f++)
+////                {
+////                    frames[f].value[n] = nodes[n].value;
+////                }
+////                for (int s = 0; s < nodes[n].setInput.Length; s++)
+////                {
+////                    var f = TotalFrames - 1 - nodes[n].setInput[s].frame;
+////                    f = Mathf.Clamp(f, 0, TotalFrames - 1);
+////                    frames[f].value[n] = nodes[n].setInput[s].value;
+////                }
+//            }
+//        }
         o.current.derivative = 1;
 //            for (int i = 0; i < inputs.Count; i++)
 //            {
@@ -169,25 +197,33 @@ public class CONTENT_NodeManager : MonoBehaviour
                 equations[i].backward();
             }
 //        }
-//        var error = o.value - System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 30.0));
-//        error = -error;
-//        print(error);
-//        for (int i = 0; i < nodes.Count; i++)
-//        {
-//            if (nodes[i].type == CONTENT_Node.Type.Value)
-//            {
-//                for (int j = 0; j < nodes[i].derivative.Length; j++) 
-//                {
-//                    nodes[i].current.value += nodes[i].derivative[j] * error * 0.000001;
-////                    nodes[i].value += nodes[i].derivative[j] * error * 0.001;
-//                }
-//            }
-//        }
-        for (int i = frames.Length - 1; i > 0; i--)
+        if (train)
         {
-            frames[i].value = frames[i - 1].value;
-            frames[i].derivative = frames[i - 1].derivative;
+            var error = o.value - System.Math.Sin(Mathf.PI * 2 * (Time.frameCount / 60.0));
+            error = -error;
+//            print(error);
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].type == CONTENT_Node.Type.Value)
+                {
+                    for (int j = 0; j < nodes[i].derivative.Length; j++)
+                    {
+                        nodes[i].current.value += (nodes[i].derivative[j] * error * trainRate) / TotalFrames;
+//                    nodes[i].value += nodes[i].derivative[j] * error * 0.001;
+                    }
+                }
+            }
         }
+//        for (int i = frames.Length - 1; i > 0; i--)
+//        {
+//            frames[i].value = frames[i - 1].value;
+//            frames[i].derivative = frames[i - 1].derivative;
+//        }
+//        for (int i = 0; i < frames.Length - 1; i++)
+//        {
+//            frames[i].value = frames[i + 1].value;
+//            frames[i].derivative = frames[i + 1].derivative;
+//        }
     }
 
     static CONTENT_NodeManager _inst;
