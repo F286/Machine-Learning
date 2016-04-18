@@ -34,7 +34,7 @@ public class CONTENT_Connect : MonoBehaviour
         var g = new GameObject("visualize", typeof(SpriteRenderer));
         g.GetComponent<SpriteRenderer>().sprite = Instantiate(Resources.Load<Sprite>("Arrow"));
         g.transform.SetParent(transform, false);
-        g.GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1);//CONTENT_NodeManager.instance.gradient.Evaluate(Random.value);
+        g.GetComponent<SpriteRenderer>().color = new Color(0.9f, 0.9f, 0.9f, 0.4f);//CONTENT_NodeManager.instance.gradient.Evaluate(Random.value);
         g.transform.position = (a.transform.position + b.transform.position) * 0.5f;
         g.transform.localScale = new Vector3(0.25f, 0.25f, 1);
         g.transform.rotation = Quaternion.Euler(0, 0, (b.transform.position - a.transform.position).Angle());

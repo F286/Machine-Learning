@@ -40,7 +40,8 @@ public class CONTENT_NodeVisualize : MonoBehaviour
 //            sprites[i].color = CONTENT_NodeManager.instance.gradient.Evaluate(Core.Sigmoid((float)v / 2f));
 
             var s = sprites[i].transform.localScale;
-            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 1.1f);
+            s.y = Mathf.Clamp(Mathf.Abs(v / 1.2f), 0, 1.1f / 1.2f);
+//            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 1.1f);
 //            s.y = Mathf.Clamp(Mathf.Abs(v / 1f), 0, 0.9f);
 //            s.y = Core.Sigmoid(Mathf.Abs(v / 2f) - 1.5f);
 

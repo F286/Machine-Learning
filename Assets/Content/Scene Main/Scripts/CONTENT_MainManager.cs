@@ -187,7 +187,7 @@ public class CONTENT_MainManager : MonoBehaviour
         }
         texture.Apply();
         x = 0;
-
+        #if UNITY_EDITOR
         // Init the Mic
         GetComponent<AudioSource>().clip = Microphone.Start(null, true, 10, 44100);
         GetComponent<AudioSource>().loop = true; // Set the AudioClip to loop
@@ -195,6 +195,7 @@ public class CONTENT_MainManager : MonoBehaviour
 //        GetComponent<AudioSource>().mute = true; // Mute to avoid feedback
         while (!(Microphone.GetPosition("") > 0)){} // Wait until the recording has started
         GetComponent<AudioSource>().Play(); // Play the audio source!
+        #endif
     }
 
     int frame = 0;

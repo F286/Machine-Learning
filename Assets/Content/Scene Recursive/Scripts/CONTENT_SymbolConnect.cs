@@ -31,7 +31,7 @@ public class CONTENT_SymbolConnect : MonoBehaviour
                 mult.type = CONTENT_Node.Type.Multiply;
 
                 var v = new GameObject("connect value");
-                v.transform.position = p + new Vector3(-0.3f, -0.16f + -0.25f * outIndex);
+                v.transform.position = p + new Vector3(-0.25f, -0.16f + -0.25f * outIndex);
                 v.transform.localScale = new Vector3(0.2f, 0.2f, 1f);
                 var val = v.AddComponent<CONTENT_Node>();
                 val.type = CONTENT_Node.Type.Value;

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
-
+#endif
 public abstract class Gate : MonoBehaviour
 {
     public Gate[] input = new Gate[0];
@@ -31,6 +32,7 @@ public abstract class Gate : MonoBehaviour
     {
         
     }
+    #if UNITY_EDITOR
     public virtual void OnDrawGizmos()
     {
 //        return;
@@ -62,6 +64,7 @@ public abstract class Gate : MonoBehaviour
         s.fontSize = 20;
         Handles.Label(transform.position, Display(), s);
     }
+    #endif
     public virtual string Display()
     {
         var s = "";

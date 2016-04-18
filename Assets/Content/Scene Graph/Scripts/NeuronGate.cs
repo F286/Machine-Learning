@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System;
 
 public class NeuronGate : Gate
@@ -180,6 +182,7 @@ public class NeuronGate : Gate
         bias.value += bias.gradient * force;
 //        variables[i].value += force * variables[i].gradient;
     }
+    #if UNITY_EDITOR
     public override void OnDrawGizmos()
     {
 //        return;
@@ -228,6 +231,7 @@ public class NeuronGate : Gate
 //                " <color=yellow>" + parameterGradient[0].ToString("+#0.000;-#0.000") + "</color>", EditorStyles.whiteLabel);
 //        }
     }
+    #endif
     public override string Display()
     {
         return "[n] " + base.Display();
