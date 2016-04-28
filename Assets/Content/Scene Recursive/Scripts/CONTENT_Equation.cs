@@ -69,6 +69,14 @@ public class CONTENT_Equation : MonoBehaviour
                 break;
             case CONTENT_Node.Type.Input:
                 break;
+            case CONTENT_Node.Type.Sin:
+                Val.value = 0;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    Val.value += In[i].value;
+                }
+                Val.value = System.Math.Sin(Val.value);
+                break;
         }
     }
     public void backward()
@@ -80,15 +88,6 @@ public class CONTENT_Equation : MonoBehaviour
                 {
                     In[i].derivative += Val.derivative;
                 }
-//                for (int i = 0; i < In.Length; i++)
-//                {
-//                    Val.value += In[i].value;
-//                }
-//                Val.value = 0;
-//                for (int i = 0; i < In.Length; i++)
-//                {
-//                    Val.value += In[i].value;
-//                }
                 break;
             case CONTENT_Node.Type.Subtract:
                 for (int i = 0; i < In.Length; i++)
@@ -114,14 +113,8 @@ public class CONTENT_Equation : MonoBehaviour
                             d *= In[b].value;
                         }
                     }
-//                    print(d);
                     In[a].derivative += d;
                 }
-//                Val.value = 1;
-//                for (int i = 0; i < In.Length; i++)
-//                {
-//                    Val.value *= In[i].value;
-//                }
                 break;
             case CONTENT_Node.Type.Divide:
                 break;
@@ -133,29 +126,39 @@ public class CONTENT_Equation : MonoBehaviour
                 }
                 s = Core.Sigmoid(s);
                 s = s * (1 - s) * Val.derivative;
-//                s *= 4;
                 for (int i = 0; i < In.Length; i++)
                 {
                     In[i].derivative += s;
                 }
-//                Val.value = 0;
-//                for (int i = 0; i < In.Length; i++)
-//                {
-//                    Val.value += In[i].value;
-//                }
-//                Val.value = Core.Sigmoid(Val.value);
                 break;
             case CONTENT_Node.Type.Tanh:
-//                Val.value = 0;
-//                for (int i = 0; i < In.Length; i++)
-//                {
-//                    Val.value += In[i].value;
-//                }
-//                Val.value = System.Math.Tanh(Val.value);
+                var fD = 0d;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    fD += In[i].value;
+                }
+                fD = 1 - (System.Math.Tanh(fD)).Squared();
+                fD *= Val.derivative;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    In[i].derivative += fD;
+                }
                 break;
             case CONTENT_Node.Type.Value:
                 break;
             case CONTENT_Node.Type.Input:
+                break;
+            case CONTENT_Node.Type.Sin:
+                var sinD = 0d;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    sinD += In[i].value;
+                }
+                sinD = System.Math.Cos(sinD) * Val.derivative;
+                for (int i = 0; i < In.Length; i++)
+                {
+                    In[i].derivative += sinD;
+                }
                 break;
         }
     }

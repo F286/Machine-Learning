@@ -15,6 +15,7 @@ public class CONTENT_Node : MonoBehaviour
         Tanh,
         Value,
         Input,
+        Sin,
     }
     [System.Serializable]
     public class SetInput
@@ -38,6 +39,7 @@ public class CONTENT_Node : MonoBehaviour
     public ulong addedBitmask;
 
     public bool displayDerivative = true;
+    public bool generateGraphic = true;
 
 //    public void Start()
 //    {
