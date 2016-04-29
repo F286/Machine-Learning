@@ -56,6 +56,14 @@ public class SCR_ManagerConvNet : MonoBehaviour
             layers[i].conv = new float[size * 3, size * 3];
             layers[i].convD = new float[size * 3, size * 3];
 
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
+                }
+            }
+
             layers[i].display = new CONTENT_ConvDisplay[size, size];
             for (int x = 0; x < size; x++) 
             {
