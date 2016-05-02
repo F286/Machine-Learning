@@ -59,7 +59,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
             layers[i].valuesD = new float[size, size];
             layers[i].conv = new float[size * 3, size * 3];
             layers[i].convD = new float[size * 3, size * 3];
-//            layers[i].weights = new float[, (size - 2) * (size - 2)];
+            layers[i].weights = new float[3 * 3, (size - 2) * (size - 2)];
 
             var set = 0;
             for (int row = 0; row < size; row++)
@@ -72,16 +72,16 @@ public class SCR_ManagerConvNet : MonoBehaviour
                 }
             }
 
-//            var set = 0;
-//            for (int row = 0; row < size; row++)
-//            {
-//                for (int column = 0; column < size; column++)
-//                {
-//                    set++;
-//                    layers[i].values[row, column] = set / 10f;
-//                    //                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
-//                }
-//            }
+            set = 0;
+            for (int row = 0; row < layers[i].weights.GetLength(0); row++)
+            {
+                for (int column = 0; column < layers[i].weights.GetLength(1); column++)
+                {
+                    set++;
+                    layers[i].weights[row, column] = set / 10f;
+                    //                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
+                }
+            }
 
             layers[i].display = new CONTENT_ConvDisplay[size, size];
             for (int row = 0; row < size; row++) 
