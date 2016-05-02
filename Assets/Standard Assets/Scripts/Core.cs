@@ -1,16 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public static class Core 
 {
+    public static float[,] multiply(float[,] a, float[,] b)
+    {
+        // row = 0, column = 1
+        Assert.AreEqual(a.row(), b.column(), "Matrix A number of rows must be equal Matrix B number of columns.");
+
+        // size of output matrix is 
+        var r = new float[b.row(), a.column()];
+        var multiplyLength = a.row();
+
+        for (int row = 0; row < r.row(); row++)
+        {
+            for (int column = 0; column < r.column(); column++)
+            {
+                r[row, column] = 0;
+
+                for (int i = 0; i < multiplyLength; i++)
+                {
+                    r[row, column] += a[i, column] * b[row, i];
+                }
+            }
+        }
+        return r;
+    }
     public static float[,] im2col(float[,] values)
     {
-        var w = values.GetLength(0);
-        var h = values.GetLength(1);
+//        var w = values.column();
+//        var h = values.row();
         // width and height for kernel array
         var width = 3 * 3;
-        var height = (w - 2) * (h - 2);
+        var height = (values.row() - 2) * (values.column() - 2);
 
         var r = new float[width, height];
 
@@ -22,8 +46,8 @@ public static class Core
 
         for (int y = 0; y < height; y++)
         {
-            var xOffset = 1 + (y % (w - 2));
-            var yOffset = 1 + (y / (w - 2));
+            var xOffset = 1 + (y % (values.row() - 2));
+            var yOffset = 1 + (y / (values.row() - 2));
 
 //            Debug.Log(xOffset + "  " + yOffset);
 //            Debug.Log((xOffset - 1) + "  " + (yOffset + 1));
@@ -39,6 +63,15 @@ public static class Core
             r[8, y] = values[xOffset + 1, yOffset + 1];
         }
         return r;
+    }
+
+    public static int row(this float[,] v)
+    {
+        return v.GetLength(0);
+    }
+    public static int column(this float[,] v)
+    {
+        return v.GetLength(1);
     }
 
     public static string Print(this float[,] v)

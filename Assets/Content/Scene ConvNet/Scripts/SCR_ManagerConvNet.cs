@@ -19,16 +19,18 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public float[,] conv;
         public float[,] convD;
 
+        public float[,] weights;
+
         public CONTENT_ConvDisplay[,] display;
 
         public void update(SCR_ManagerConvNet manager)
         {
-            for (int x = 0; x < size; x++)
+            for (int row = 0; row < size; row++)
             {
-                for (int y = 0; y < size; y++)
+                for (int column = 0; column < size; column++)
                 {
-                    display[x, y].pixel.color = 
-                        manager.gradient.Evaluate(Mathf.InverseLerp(-3, 3, values[x, y]));
+                    display[row, column].pixel.color = 
+                        manager.gradient.Evaluate(Mathf.InverseLerp(-3, 3, values[row, column]));
                 }
             }
         }
@@ -57,27 +59,39 @@ public class SCR_ManagerConvNet : MonoBehaviour
             layers[i].valuesD = new float[size, size];
             layers[i].conv = new float[size * 3, size * 3];
             layers[i].convD = new float[size * 3, size * 3];
+//            layers[i].weights = new float[, (size - 2) * (size - 2)];
 
             var set = 0;
-            for (int y = 0; y < size; y++)
+            for (int row = 0; row < size; row++)
             {
-                for (int x = 0; x < size; x++)
+                for (int column = 0; column < size; column++)
                 {
                     set++;
-                    layers[i].values[x, y] = set / 10f;
+                    layers[i].values[row, column] = set / 10f;
 //                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
                 }
             }
 
+//            var set = 0;
+//            for (int row = 0; row < size; row++)
+//            {
+//                for (int column = 0; column < size; column++)
+//                {
+//                    set++;
+//                    layers[i].values[row, column] = set / 10f;
+//                    //                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
+//                }
+//            }
+
             layers[i].display = new CONTENT_ConvDisplay[size, size];
-            for (int x = 0; x < size; x++) 
+            for (int row = 0; row < size; row++) 
             {
-                for (int y = 0; y < size; y++) 
+                for (int column = 0; column < size; column++) 
                 {
                     var inst = GameObject.Instantiate(template);
                     inst.transform.parent = transform;
-                    inst.transform.localPosition = new Vector3(x, y) + (Vector3)offset * i;
-                    layers[i].display[x, y] = inst;
+                    inst.transform.localPosition = new Vector3(column, row) + (Vector3)offset * i;
+                    layers[i].display[row, column] = inst;
                 }
             } 
         }
