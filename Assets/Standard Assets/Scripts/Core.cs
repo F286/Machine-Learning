@@ -4,6 +4,30 @@ using System.Collections.Generic;
 
 public static class Core 
 {
+    public static float[,] im2col(float[,] values)
+    {
+        var width = 3 * 3;
+        var height = values.GetLength(0) - 1 + values.GetLength(1) - 1;
+
+        var r = new float[width, height];
+
+        for (int y = 0; y < height; y++)
+        {
+            var xOffset = 1 + y / width;
+            var yOffset = 1 + y % width;
+            r[0, y] = values[xOffset - 1, yOffset - 1];
+            r[1, y] = values[xOffset + 0, yOffset - 1];
+            r[2, y] = values[xOffset + 1, yOffset - 1];
+            r[3, y] = values[xOffset - 1, yOffset + 0];
+            r[4, y] = values[xOffset + 0, yOffset + 0];
+            r[5, y] = values[xOffset + 1, yOffset + 0];
+            r[6, y] = values[xOffset - 1, yOffset + 1];
+            r[7, y] = values[xOffset + 0, yOffset + 1];
+            r[8, y] = values[xOffset + 1, yOffset + 1];
+        }
+        return r;
+    }
+
     public static IEnumerable<GameObject> FindInChildrenWithTag(this GameObject g, string tag)
     {
         foreach (var item in g.GetComponentsInChildren<Transform>())
