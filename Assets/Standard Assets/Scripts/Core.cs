@@ -44,23 +44,23 @@ public static class Core
 
         Debug.Log(height);
 
-        for (int y = 0; y < height; y++)
+        for (int row = 0; row < height; row++)
         {
-            var xOffset = 1 + (y % (values.row() - 2));
-            var yOffset = 1 + (y / (values.row() - 2));
+            var columnOffset = 1 + (row % (values.row() - 2));
+            var rowOffset = 1 + (row / (values.row() - 2));
 
 //            Debug.Log(xOffset + "  " + yOffset);
 //            Debug.Log((xOffset - 1) + "  " + (yOffset + 1));
 
-            r[0, y] = values[xOffset - 1, yOffset - 1];
-            r[1, y] = values[xOffset + 0, yOffset - 1];
-            r[2, y] = values[xOffset + 1, yOffset - 1];
-            r[3, y] = values[xOffset - 1, yOffset + 0];
-            r[4, y] = values[xOffset + 0, yOffset + 0];
-            r[5, y] = values[xOffset + 1, yOffset + 0];
-            r[6, y] = values[xOffset - 1, yOffset + 1];
-            r[7, y] = values[xOffset + 0, yOffset + 1];
-            r[8, y] = values[xOffset + 1, yOffset + 1];
+            r[0, row] = values[rowOffset - 1, columnOffset - 1];
+            r[1, row] = values[rowOffset - 1, columnOffset + 0];
+            r[2, row] = values[rowOffset - 1, columnOffset + 1];
+            r[3, row] = values[rowOffset + 0, columnOffset - 1];
+            r[4, row] = values[rowOffset + 0, columnOffset + 0];
+            r[5, row] = values[rowOffset + 0, columnOffset + 1];
+            r[6, row] = values[rowOffset + 1, columnOffset - 1];
+            r[7, row] = values[rowOffset + 1, columnOffset + 0];
+            r[8, row] = values[rowOffset + 1, columnOffset + 1];
         }
         return r;
     }

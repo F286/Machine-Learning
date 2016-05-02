@@ -93,7 +93,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
                     inst.transform.localPosition = new Vector3(column, row) + (Vector3)offset * i;
                     layers[i].display[row, column] = inst;
                 }
-            } 
+            }
         }
 
         template.gameObject.SetActive(false);
