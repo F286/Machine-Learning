@@ -36,7 +36,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public static void forward(Layer a, Layer b)
         {
             var kernelMatrix = Core.im2col(a.values);
-//            print(kernelMatrix);
+            print(kernelMatrix.Print());
         }
         public static void backward(Layer a, Layer b)
         {
@@ -58,11 +58,14 @@ public class SCR_ManagerConvNet : MonoBehaviour
             layers[i].conv = new float[size * 3, size * 3];
             layers[i].convD = new float[size * 3, size * 3];
 
-            for (int x = 0; x < size; x++)
+            var set = 0;
+            for (int y = 0; y < size; y++)
             {
-                for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
                 {
-                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
+                    set++;
+                    layers[i].values[x, y] = set / 10f;
+//                    layers[i].values[x, y] = Random.Range(-0.1f, 0.1f);
                 }
             }
 

@@ -18,7 +18,7 @@ public static class Core
 //        Debug.Log(r.GetLength(0));
 //        Debug.Log(r.GetLength(1));
 
-//        Debug.Log(w);
+        Debug.Log(height);
 
         for (int y = 0; y < height; y++)
         {
@@ -37,6 +37,22 @@ public static class Core
             r[6, y] = values[xOffset - 1, yOffset + 1];
             r[7, y] = values[xOffset + 0, yOffset + 1];
             r[8, y] = values[xOffset + 1, yOffset + 1];
+        }
+        return r;
+    }
+
+    public static string Print(this float[,] v)
+    {
+        var r = "";
+
+        for (int y = 0; y < v.GetLength(1); y++)
+        {
+            var app = "";
+            for (int x = 0; x < v.GetLength(0); x++)
+            {
+                app += v[x, y].ToString("0.00") + " ";
+            }
+            r += app + '\n';
         }
         return r;
     }
