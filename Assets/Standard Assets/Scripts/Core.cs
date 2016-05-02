@@ -6,15 +6,28 @@ public static class Core
 {
     public static float[,] im2col(float[,] values)
     {
+        var w = values.GetLength(0);
+        var h = values.GetLength(1);
+        // width and height for kernel array
         var width = 3 * 3;
-        var height = values.GetLength(0) - 1 + values.GetLength(1) - 1;
+        var height = (w - 2) * (h - 2);
 
         var r = new float[width, height];
 
+//        var w = values.GetLength(0);
+//        Debug.Log(r.GetLength(0));
+//        Debug.Log(r.GetLength(1));
+
+//        Debug.Log(w);
+
         for (int y = 0; y < height; y++)
         {
-            var xOffset = 1 + y / width;
-            var yOffset = 1 + y % width;
+            var xOffset = 1 + (y % (w - 2));
+            var yOffset = 1 + (y / (w - 2));
+
+//            Debug.Log(xOffset + "  " + yOffset);
+//            Debug.Log((xOffset - 1) + "  " + (yOffset + 1));
+
             r[0, y] = values[xOffset - 1, yOffset - 1];
             r[1, y] = values[xOffset + 0, yOffset - 1];
             r[2, y] = values[xOffset + 1, yOffset - 1];

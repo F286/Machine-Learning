@@ -3,8 +3,8 @@ using System.Collections;
 
 public class SCR_ManagerConvNet : MonoBehaviour 
 {
-    const int size = 3;
-    readonly Vector2 offset = new Vector2(0, 4);
+    const int size = 4;
+    readonly Vector2 offset = new Vector2(0, 4.5f);
 
     public Gradient gradient;
     public CONTENT_ConvDisplay template;
@@ -36,6 +36,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public static void forward(Layer a, Layer b)
         {
             var kernelMatrix = Core.im2col(a.values);
+//            print(kernelMatrix);
         }
         public static void backward(Layer a, Layer b)
         {
