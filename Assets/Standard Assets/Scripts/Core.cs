@@ -30,27 +30,15 @@ public static class Core
     }
     public static float[,] im2col(float[,] values)
     {
-//        var w = values.column();
-//        var h = values.row();
-        // width and height for kernel array
         var width = 3 * 3;
         var height = (values.row() - 2) * (values.column() - 2);
 
         var r = new float[width, height];
 
-//        var w = values.GetLength(0);
-//        Debug.Log(r.GetLength(0));
-//        Debug.Log(r.GetLength(1));
-
-//        Debug.Log(height);
-
         for (int row = 0; row < height; row++)
         {
             var columnOffset = 1 + (row % (values.row() - 2));
             var rowOffset = 1 + (row / (values.row() - 2));
-
-//            Debug.Log(xOffset + "  " + yOffset);
-//            Debug.Log((xOffset - 1) + "  " + (yOffset + 1));
 
             r[0, row] = values[rowOffset - 1, columnOffset - 1];
             r[1, row] = values[rowOffset - 1, columnOffset + 0];
@@ -64,6 +52,33 @@ public static class Core
         }
         return r;
     }
+    public static float[,] im2col(float[,,] values)
+    {
+//        var width = 3 * 3;
+//        var height = (values.row() - 2) * (values.column() - 2);
+
+        var r = new float[3 * 3, (values.row() - 2) * (values.column() - 2)];
+
+        for (int column = 0; column < r.column(); column++)
+        {
+            var columnOffset = 1 + (column % (values.row() - 2));
+            var rowOffset = 1 + (column / (values.row() - 2));
+
+            for (int layer = 0; layer < values.layer(); layer++)
+            {
+                r[layer * 9 + 0, column] = values[rowOffset - 1, columnOffset - 1, layer];
+                r[layer * 9 + 1, column] = values[rowOffset - 1, columnOffset + 0, layer];
+                r[layer * 9 + 2, column] = values[rowOffset - 1, columnOffset + 1, layer];
+                r[layer * 9 + 3, column] = values[rowOffset + 0, columnOffset - 1, layer];
+                r[layer * 9 + 4, column] = values[rowOffset + 0, columnOffset + 0, layer];
+                r[layer * 9 + 5, column] = values[rowOffset + 0, columnOffset + 1, layer];
+                r[layer * 9 + 6, column] = values[rowOffset + 1, columnOffset - 1, layer];
+                r[layer * 9 + 7, column] = values[rowOffset + 1, columnOffset + 0, layer];
+                r[layer * 9 + 8, column] = values[rowOffset + 1, columnOffset + 1, layer];   
+            }
+        }
+        return r;
+    }
 
     public static int row(this float[,] v)
     {
@@ -74,20 +89,53 @@ public static class Core
         return v.GetLength(1);
     }
 
+    public static int row(this float[,,] v)
+    {
+        return v.GetLength(0);
+    }
+    public static int column(this float[,,] v)
+    {
+        return v.GetLength(1);
+    }
+    public static int layer(this float[,,] v)
+    {
+        return v.GetLength(2);
+    }
+
     public static string Print(this float[,] v)
     {
-        var r = "";
+        var returnValue = "";
 
         for (int row = 0; row < v.GetLength(0); row++)
         {
-            var app = "";
+            var _row = "";
             for (int column = 0; column < v.GetLength(1); column++)
             {
-                app += v[row, column].ToString("0.00") + " ";
+                _row += v[row, column].ToString("0.00") + " ";
             }
-            r += app + '\n';
+            returnValue += _row + '\n';
         }
-        return r;
+        return returnValue;
+    }
+    public static string Print(this float[,,] v)
+    {
+        var returnValue = "";
+
+        for (int row = 0; row < v.GetLength(0); row++)
+        {
+            var _row = "";
+            for (int column = 0; column < v.GetLength(1); column++)
+            {
+                var _column = "";
+                for (int layer = 0; layer < v.GetLength(2); layer++)
+                {
+                    _column += v[row, column, layer].ToString("0.0") + " ";
+                }
+                _row += _column + ", ";
+            }
+            returnValue += _row + '\n';
+        }
+        return returnValue;
     }
 
     public static IEnumerable<GameObject> FindInChildrenWithTag(this GameObject g, string tag)

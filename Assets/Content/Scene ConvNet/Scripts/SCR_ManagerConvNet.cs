@@ -4,6 +4,7 @@ using System.Collections;
 public class SCR_ManagerConvNet : MonoBehaviour 
 {
     const int size = 4;
+    const int numNeurons = 10;
     readonly Vector2 offset = new Vector2(0, 4.5f);
 
     public Gradient gradient;
@@ -21,7 +22,8 @@ public class SCR_ManagerConvNet : MonoBehaviour
 
         public float[,] weights;
 
-        public CONTENT_ConvDisplay[,] display;
+//        public CONTENT_ConvDisplay[,] display;
+        public Texture2D[] textures;
 
         public void initialize()
         {
@@ -29,7 +31,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
             valuesD = new float[size, size];
             conv = new float[size * 3, size * 3];
             convD = new float[size * 3, size * 3];
-            weights = new float[(size - 2) * (size - 2), 3 * 3];
+            weights = new float[numNeurons, 3 * 3];
 
             var set = 0;
             for (int row = 0; row < size; row++)
@@ -53,15 +55,46 @@ public class SCR_ManagerConvNet : MonoBehaviour
                 }
             }
         }
-        public void initGraphics(SCR_ManagerConvNet manager)
+        public void initGraphics(SCR_ManagerConvNet manager, int index)
         {
-//            var inst = GameObject.Instantiate(manager.template);
-//            inst.transform.parent = transform;
-//            inst.transform.localPosition = new Vector3(column, row) + (Vector3)offset * i;
-//            display = inst;
+            textures = new Texture2D[numNeurons];
+
+            for (int i = 0; i < textures.Length; i++)
+            {
+                var square = GameObject.Instantiate(manager.template);
+                square.transform.localPosition = new Vector3(index * 1.1f, i * 1.1f, 0);//new Vector3(column, row) + (Vector3)offset * i;
+
+                // Create a new 2x2 texture ARGB32 (32 bit with alpha) and no mipmaps
+                var texture = new Texture2D(3, 3, TextureFormat.ARGB32, false);
+                texture.filterMode = FilterMode.Point;
+
+//            // set the pixel values
+//            texture.SetPixel(0, 0, new Color(0.5f, 0.5f, 0.5f, 0.5f));
+//            texture.SetPixel(1, 0, Color.clear);
+//            texture.SetPixel(0, 1, Color.white);
+//            texture.SetPixel(1, 1, Color.black);
+
+                // Apply all SetPixel calls
+//                texture.Apply();
+
+                // connect texture to material of GameObject this script is attached to
+                square.image.GetComponent<Renderer>().material.mainTexture = texture;
+
+                textures[i] = texture;
+            }
         }
-        public void update(SCR_ManagerConvNet manager)
+        public void update(SCR_ManagerConvNet m)
         {
+            for (int row = 0; row < weights.GetLength(0); row++)
+            {
+                var t = textures[row];
+                for (int column = 0; column < weights.GetLength(1); column++)
+                {
+                    var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, weights[row, column]));
+                    t.SetPixel(column % 3, column / 3, c);
+                }
+                t.Apply();
+            }
 //            for (int row = 0; row < size; row++)
 //            {
 //                for (int column = 0; column < size; column++)
@@ -96,7 +129,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
         {
             layers[i] = new Layer();
             layers[i].initialize();
-            layers[i].initGraphics(this);
+            layers[i].initGraphics(this, i);
         }
 
         template.gameObject.SetActive(false);
