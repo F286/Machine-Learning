@@ -4,7 +4,7 @@ using System.Collections;
 public class SCR_ManagerConvNet : MonoBehaviour 
 {
     const int size = 4;
-    const int numNeurons = 10;
+    const int numNeurons = 3;
     readonly Vector2 offset = new Vector2(0, 4.5f);
 
     public Gradient gradient;
@@ -33,7 +33,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
             convD = new float[size * 3, size * 3];
             weights = new float[numNeurons, 3 * 3];
 
-            var set = 0;
+            var set = -1;
             for (int row = 0; row < size; row++)
             {
                 for (int column = 0; column < size; column++)
@@ -44,7 +44,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
                 }
             }
 
-            set = 0;
+            set = -1;
             for (int row = 0; row < weights.GetLength(0); row++)
             {
                 for (int column = 0; column < weights.GetLength(1); column++)
