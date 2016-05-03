@@ -54,10 +54,6 @@ public static class Core
     }
     public static float[,] im2col(float[,,] values)
     {
-//        var width = 3 * 3;
-//        var height = (values.row() - 2) * (values.column() - 2);
-//        Debug.Log(values.Print());
-
         var r = new float[3 * 3 * values.layer(), (values.row() - 2) * (values.column() - 2)];
 
         for (int column = 0; column < r.column(); column++)
