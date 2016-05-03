@@ -29,7 +29,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
             valuesD = new float[size, size];
             conv = new float[size * 3, size * 3];
             convD = new float[size * 3, size * 3];
-            weights = new float[3 * 3, (size - 2) * (size - 2)];
+            weights = new float[(size - 2) * (size - 2), 3 * 3];
 
             var set = 0;
             for (int row = 0; row < size; row++)
@@ -75,7 +75,10 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public static void forward(Layer a, Layer b)
         {
             var kernelMatrix = Core.im2col(a.values);
+            print(b.weights.Print());
             print(kernelMatrix.Print());
+            var multiply = Core.multiply(kernelMatrix, b.weights);
+            print(multiply.Print());
         }
         public static void backward(Layer a, Layer b)
         {

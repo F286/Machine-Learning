@@ -42,7 +42,7 @@ public static class Core
 //        Debug.Log(r.GetLength(0));
 //        Debug.Log(r.GetLength(1));
 
-        Debug.Log(height);
+//        Debug.Log(height);
 
         for (int row = 0; row < height; row++)
         {
@@ -78,12 +78,12 @@ public static class Core
     {
         var r = "";
 
-        for (int y = 0; y < v.GetLength(1); y++)
+        for (int row = 0; row < v.GetLength(0); row++)
         {
             var app = "";
-            for (int x = 0; x < v.GetLength(0); x++)
+            for (int column = 0; column < v.GetLength(1); column++)
             {
-                app += v[x, y].ToString("0.00") + " ";
+                app += v[row, column].ToString("0.00") + " ";
             }
             r += app + '\n';
         }
