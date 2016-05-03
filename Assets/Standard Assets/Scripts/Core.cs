@@ -56,8 +56,9 @@ public static class Core
     {
 //        var width = 3 * 3;
 //        var height = (values.row() - 2) * (values.column() - 2);
+//        Debug.Log(values.Print());
 
-        var r = new float[3 * 3, (values.row() - 2) * (values.column() - 2)];
+        var r = new float[3 * 3 * values.layer(), (values.row() - 2) * (values.column() - 2)];
 
         for (int column = 0; column < r.column(); column++)
         {
@@ -131,9 +132,9 @@ public static class Core
                 {
                     _column += v[row, column, layer].ToString("0.0") + " ";
                 }
-                _row += _column + ", ";
+                _row += _column + '\n';
             }
-            returnValue += _row + '\n';
+            returnValue += _row + ", " + '\n';
         }
         return returnValue;
     }

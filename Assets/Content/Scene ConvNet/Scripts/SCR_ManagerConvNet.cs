@@ -4,8 +4,8 @@ using System.Collections;
 public class SCR_ManagerConvNet : MonoBehaviour 
 {
     const int size = 4;
-    const int numNeurons = 3;
-    readonly Vector2 offset = new Vector2(0, 4.5f);
+    const int neuronsNum = 3;
+//    readonly Vector2 offset = new Vector2(0, 4.5f);
 
     public Gradient gradient;
     public CONTENT_ConvDisplay template;
@@ -14,87 +14,146 @@ public class SCR_ManagerConvNet : MonoBehaviour
     public class Layer
     {
         // organized in grid
-        public float[,] values;
-        public float[,] valuesD;
+        public float[,,] value;
+        public float[,,] valueGradient;
         // im2col organized in rows columns?
-        public float[,] conv;
-        public float[,] convD;
+//        public float[,] conv;
+//        public float[,] convD;
 
-        public float[,] weights;
+        public float[,] convolution;
+        public float[,] convolutionGradient;
 
 //        public CONTENT_ConvDisplay[,] display;
-        public Texture2D[] textures;
+        public Texture2D[] valueDisplay;
+        public Texture2D[] convolutionDisplay;
 
-        public void initialize()
+        public void initialize(Layer previous)
         {
-            values = new float[size, size];
-            valuesD = new float[size, size];
-            conv = new float[size * 3, size * 3];
-            convD = new float[size * 3, size * 3];
-            weights = new float[numNeurons, 3 * 3];
+            if (previous == null)
+            {
+                value = new float[3, 3, 3];
+                valueGradient = new float[value.row(), value.column(), value.layer()];
+//                value = new float[32, 32, 3];
+//                valueGradient = new float[32, 32, 3];
+
+                convolution = new float[0, 0];
+                convolutionGradient = new float[0, 0];
+            }
+            else
+            {
+//                print(previous.value.row());
+//                print(previous.value.column());
+//                print(previous.value.layer());
+                value = new float[previous.value.row() - 2, previous.value.column() - 2, neuronsNum];
+                valueGradient = new float[value.row(), value.column(), value.layer()];
+
+                convolution = new float[(previous.value.row() - 2) * (previous.value.column() - 2),
+                    previous.value.row() * previous.value.column() * previous.value.column()];
+                convolutionGradient = new float[convolution.row(), convolution.column()];
+            }
+//            value = new float[size, size];
+//            valueGradient = new float[size, size];
+////            conv = new float[size * 3, size * 3];
+////            convD = new float[size * 3, size * 3];
+//            convolution = new float[numNeurons, 3 * 3];
 
             var set = -1;
-            for (int row = 0; row < size; row++)
+            for (int row = 0; row < value.row(); row++)
             {
-                for (int column = 0; column < size; column++)
+                for (int column = 0; column < value.column(); column++)
                 {
-                    set++;
-                    values[row, column] = set / 10f;
-                    //                    values[x, y] = Random.Range(-0.1f, 0.1f);
+                    for (int layer = 0; layer < value.layer(); layer++)
+                    {
+                        set++;
+                        value[row, column, layer] = set / 10f;
+                        valueGradient[row, column, layer] = set / 10f;
+                    }
                 }
             }
 
             set = -1;
-            for (int row = 0; row < weights.GetLength(0); row++)
+            for (int row = 0; row < convolution.row(); row++)
             {
-                for (int column = 0; column < weights.GetLength(1); column++)
+                for (int column = 0; column < convolution.column(); column++)
                 {
                     set++;
-                    weights[row, column] = set / 10f;
-                    //                    values[x, y] = Random.Range(-0.1f, 0.1f);
+                    convolution[row, column] = set / 10f;
+                    convolutionGradient[row, column] = set / 10f;
                 }
             }
+//            print(value.Print());
+//            print(convolution.Print());
         }
         public void initGraphics(SCR_ManagerConvNet manager, int index)
         {
-            textures = new Texture2D[numNeurons];
+            valueDisplay = new Texture2D[value.layer()];
+            convolutionDisplay = new Texture2D[convolution.row()];
+//            textures = new Texture2D[neuronsNum, 2];
+            print(convolution.Print());
 
-            for (int i = 0; i < textures.Length; i++)
+            for (int layer = 0; layer < convolutionDisplay.Length; layer++)
             {
-                var square = GameObject.Instantiate(manager.template);
-                square.transform.localPosition = new Vector3(index * 1.1f, i * 1.1f, 0);//new Vector3(column, row) + (Vector3)offset * i;
+                var p = new Vector2(0.0f + index * 2.4f, 1.1f * layer);
+                var image = GameObject.Instantiate(manager.template, p, Quaternion.identity);
+                image.name = "convolution";
 
-                // Create a new 2x2 texture ARGB32 (32 bit with alpha) and no mipmaps
-                var texture = new Texture2D(3, 3, TextureFormat.ARGB32, false);
-                texture.filterMode = FilterMode.Point;
+                var t = new Texture2D(convolution.column(), convolution.row(), TextureFormat.ARGB32, false);
+                t.filterMode = FilterMode.Point;
 
-//            // set the pixel values
-//            texture.SetPixel(0, 0, new Color(0.5f, 0.5f, 0.5f, 0.5f));
-//            texture.SetPixel(1, 0, Color.clear);
-//            texture.SetPixel(0, 1, Color.white);
-//            texture.SetPixel(1, 1, Color.black);
+                ((CONTENT_ConvDisplay)image).image.GetComponent<Renderer>().material.mainTexture = t;
+                convolutionDisplay[layer] = t;
+            }
+            for (int layer = 0; layer < valueDisplay.Length; layer++)
+            {
+                var p = new Vector2(1.1f + index * 2.4f, 1.1f * layer);
+                var image = GameObject.Instantiate(manager.template, p, Quaternion.identity);
+                image.name = "value";
 
-                // Apply all SetPixel calls
-//                texture.Apply();
+                var t = new Texture2D(value.column(), value.row(), TextureFormat.ARGB32, false);
+                t.filterMode = FilterMode.Point;
 
-                // connect texture to material of GameObject this script is attached to
-                square.image.GetComponent<Renderer>().material.mainTexture = texture;
-
-                textures[i] = texture;
+                ((CONTENT_ConvDisplay)image).image.GetComponent<Renderer>().material.mainTexture = t;
+                valueDisplay[layer] = t;
             }
         }
         public void update(SCR_ManagerConvNet m)
         {
-            for (int row = 0; row < weights.GetLength(0); row++)
+//            print(convolutionDisplay.GetLength(1));
+            for (int row = 0; row < convolution.row(); row++)
             {
-                var t = textures[row];
-                for (int column = 0; column < weights.GetLength(1); column++)
+                var t = convolutionDisplay[row];
+                for (int column = 0; column < convolution.column(); column++)
                 {
-                    var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, weights[row, column]));
-                    t.SetPixel(column % 3, column / 3, c);
+                    var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, convolution[row, column]));
+                    t.SetPixel(column % t.width, column / t.width, c);
+//                    print((column % 3) + ", " + (column / 3));
                 }
                 t.Apply();
             }
+            for (int layer = 0; layer < valueDisplay.Length; layer++)
+            {
+                var t = valueDisplay[layer];
+                for (int row = 0; row < value.row(); row++)
+                {
+                    for (int column = 0; column < value.column(); column++)
+                    {
+                        var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, value[row, column, layer]));
+                        t.SetPixel(row, column, c);
+                    }
+                }
+                t.Apply();
+            }
+
+//            for (int row = 0; row < convolution.GetLength(0); row++)
+//            {
+//                var t = textures[row];
+//                for (int column = 0; column < convolution.GetLength(1); column++)
+//                {
+//                    var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, convolution[row, column]));
+//                    t.SetPixel(column % 3, column / 3, c);
+//                }
+//                t.Apply();
+//            }
 //            for (int row = 0; row < size; row++)
 //            {
 //                for (int column = 0; column < size; column++)
@@ -107,11 +166,13 @@ public class SCR_ManagerConvNet : MonoBehaviour
 
         public static void forward(Layer a, Layer b)
         {
-            var kernelMatrix = Core.im2col(a.values);
-            print(b.weights.Print());
-            print(kernelMatrix.Print());
-            var multiply = Core.multiply(kernelMatrix, b.weights);
-            print(multiply.Print());
+            var kernelMatrix = Core.im2col(a.value);
+//            print("kernelMatrix.Print()");
+//            print(kernelMatrix.Print());
+//            print("b.convolution.Print()");
+//            print(b.convolution.Print());
+            var multiply = Core.multiply(kernelMatrix, b.convolution);
+//            print(multiply.Print());
         }
         public static void backward(Layer a, Layer b)
         {
@@ -128,7 +189,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
         for (int i = 0; i < layers.Length; i++)
         {
             layers[i] = new Layer();
-            layers[i].initialize();
+            layers[i].initialize(i == 0 ? null : layers[i - 1]);
             layers[i].initGraphics(this, i);
         }
 
