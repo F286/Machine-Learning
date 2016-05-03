@@ -7,7 +7,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
     const int neuronsNum = 3;
 
     public Gradient gradient;
-    public CONTENT_ConvDisplay template;
+    public MeshRenderer template;
 
     [System.Serializable]
     public class Layer
@@ -20,7 +20,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public float[,] convolutionGradient;
 
         public Texture2D[] valueDisplay;
-        public Texture2D[] convolutionDisplay;
+        public MeshRenderer[,] convolutionDisplay;
 
         public void initialize(Layer previous)
         {
@@ -54,7 +54,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
                     }
                 }
             }
-            set = -1;
+            set = -12;
             for (int row = 0; row < convolution.row(); row++)
             {
                 for (int column = 0; column < convolution.column(); column++)
@@ -68,62 +68,93 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public void initGraphics(SCR_ManagerConvNet manager, int index)
         {
             valueDisplay = new Texture2D[value.layer()];
-            convolutionDisplay = new Texture2D[convolution.row()];
+            //            convolutionDisplay = new Texture2D[convolution.row()];
+            convolutionDisplay = new MeshRenderer[convolution.row(), convolution.column()];
 
             print(convolution.Print());
             print(convolution.row());
 
-            for (int layer = 0; layer < convolutionDisplay.Length; layer++)
+            for (int row = 0; row < convolution.row(); row++)
             {
-                var p = new Vector2(0.0f + index * 2.4f, 1.1f * layer);
-                var image = GameObject.Instantiate(manager.template, p, Quaternion.identity);
-                image.name = "convolution";
-
-                var t = new Texture2D(3, 3, TextureFormat.ARGB32, false);
-                t.filterMode = FilterMode.Point;
-
-                ((CONTENT_ConvDisplay)image).image.GetComponent<Renderer>().material.mainTexture = t;
-                convolutionDisplay[layer] = t;
+                for (int column = 0; column < convolution.column(); column++)
+                {
+                    var s = GameObject.Instantiate(manager.template);
+                    var layer = column / 9;
+                    var c = column - layer * 9;
+                    s.transform.localPosition = new Vector3(c % 3, c / 3 - row * 4, layer);
+                    s.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+                    s.name = "conv " + row + ", " + column;
+                    convolutionDisplay[row, column] = s;
+                }
             }
-            for (int layer = 0; layer < valueDisplay.Length; layer++)
-            {
-                var p = new Vector2(1.1f + index * 2.4f, 1.1f * layer);
-                var image = GameObject.Instantiate(manager.template, p, Quaternion.identity);
-                image.name = "value";
 
-                var t = new Texture2D(value.column(), value.row(), TextureFormat.ARGB32, false);
-                t.filterMode = FilterMode.Point;
-
-                ((CONTENT_ConvDisplay)image).image.GetComponent<Renderer>().material.mainTexture = t;
-                valueDisplay[layer] = t;
-            }
+//            for (int layer = 0; layer < convolutionDisplay.Length; layer++)
+//            {
+//                var p = new Vector2(0.0f + index * 2.4f, 1.1f * layer);
+//                var image = GameObject.Instantiate(manager.template, p, Quaternion.identity);
+//                image.name = "convolution";
+//
+//                var t = new Texture2D(3, 3, TextureFormat.ARGB32, false);
+//                t.filterMode = FilterMode.Point;
+//
+//                ((CONTENT_ConvDisplay)image).image.GetComponent<Renderer>().material.mainTexture = t;
+//                convolutionDisplay[layer] = t;
+//            }
+//            for (int layer = 0; layer < valueDisplay.Length; layer++)
+//            {
+//                var p = new Vector2(1.1f + index * 2.4f, 1.1f * layer);
+//                var image = GameObject.Instantiate(manager.template, p, Quaternion.identity);
+//                image.name = "value";
+//
+//                var t = new Texture2D(value.column(), value.row(), TextureFormat.ARGB32, false);
+//                t.filterMode = FilterMode.Point;
+//
+//                ((CONTENT_ConvDisplay)image).image.GetComponent<Renderer>().material.mainTexture = t;
+//                valueDisplay[layer] = t;
+//            }
         }
-        public void updateGraphics(SCR_ManagerConvNet m)
+        public void updateGraphics(SCR_ManagerConvNet manager)
         {
             for (int row = 0; row < convolution.row(); row++)
             {
-                var t = convolutionDisplay[row];
-                for (int column = 0; column < convolution.column() / 3; column++)
+                for (int column = 0; column < convolution.column(); column++)
                 {
-//                    var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, convolution[row, column]));
-                    var c = new Color(convolution[row, column], convolution[row, column + 9], convolution[row, column + 18]);
-                    t.SetPixel(column % t.width, column / t.width, c);
+                    var v = convolution[row, column];
+                    var c = manager.gradient.Evaluate(Mathf.InverseLerp(-2, 2, v));
+                    var s = Mathf.Clamp01(0.05f + Mathf.Abs(v / 4));
+                    convolutionDisplay[row, column].material.color = c;
+                    convolutionDisplay[row, column].transform.localScale = new Vector3(s, s, s);
+//                    var s = GameObject.Instantiate(manager.template);
+//                    var layer = column / 9;
+//                    var c = column - layer * 9;
+//                    s.transform.localPosition = new Vector3(c % 3, c / 3 - row * 4, -layer);
+//                    s.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
                 }
-                t.Apply();
             }
-            for (int layer = 0; layer < valueDisplay.Length; layer++)
-            {
-                var t = valueDisplay[layer];
-                for (int row = 0; row < value.row(); row++)
-                {
-                    for (int column = 0; column < value.column(); column++)
-                    {
-                        var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, value[row, column, layer]));
-                        t.SetPixel(row, column, c);
-                    }
-                }
-                t.Apply();
-            }
+//            for (int row = 0; row < convolution.row(); row++)
+//            {
+//                var t = convolutionDisplay[row];
+//                for (int column = 0; column < convolution.column() / 3; column++)
+//                {
+////                    var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, convolution[row, column]));
+//                    var c = new Color(convolution[row, column], convolution[row, column + 9], convolution[row, column + 18]);
+//                    t.SetPixel(column % t.width, column / t.width, c);
+//                }
+//                t.Apply();
+//            }
+//            for (int layer = 0; layer < valueDisplay.Length; layer++)
+//            {
+//                var t = valueDisplay[layer];
+//                for (int row = 0; row < value.row(); row++)
+//                {
+//                    for (int column = 0; column < value.column(); column++)
+//                    {
+//                        var c = m.gradient.Evaluate(Mathf.InverseLerp(-2, 2, value[row, column, layer]));
+//                        t.SetPixel(row, column, c);
+//                    }
+//                }
+//                t.Apply();
+//            }
         }
         public static void forward(Layer a, Layer b)
         {
