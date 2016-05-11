@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SCR_ManagerConvNet : MonoBehaviour 
 {
-    const int size = 4;
+//    const int size = 4;
     const int neuronsNum = 3;
 
     public Gradient gradient;
@@ -19,13 +19,14 @@ public class SCR_ManagerConvNet : MonoBehaviour
         public float[,] convolution;
         public float[,] convolutionGradient;
 
-        public Texture2D[] valueDisplay;
+        public MeshRenderer[,,] valueDisplay;
         public MeshRenderer[,] convolutionDisplay;
 
         public void initialize(Layer previous)
         {
             if (previous == null)
             {
+//                value = new float[4, 4, 4];
                 value = new float[3, 3, 3];
                 valueGradient = new float[value.row(), value.column(), value.layer()];
 
@@ -37,7 +38,7 @@ public class SCR_ManagerConvNet : MonoBehaviour
                 value = new float[previous.value.row() - 2, previous.value.column() - 2, neuronsNum];
                 valueGradient = new float[value.row(), value.column(), value.layer()];
 
-                convolution = new float[(previous.value.row() - 2) * (previous.value.column() - 2),
+                convolution = new float[neuronsNum,
                     previous.value.row() * previous.value.column() * previous.value.column()];
                 convolutionGradient = new float[convolution.row(), convolution.column()];
             }
@@ -67,9 +68,10 @@ public class SCR_ManagerConvNet : MonoBehaviour
         }
         public void initGraphics(SCR_ManagerConvNet manager, int index)
         {
-            valueDisplay = new Texture2D[value.layer()];
+//            valueDisplay = new Texture2D[value.layer()];
             //            convolutionDisplay = new Texture2D[convolution.row()];
             convolutionDisplay = new MeshRenderer[convolution.row(), convolution.column()];
+            valueDisplay = new MeshRenderer[value.row(), value.column(), value.layer()];
 
             print(convolution.Print());
             print(convolution.row());
@@ -85,6 +87,22 @@ public class SCR_ManagerConvNet : MonoBehaviour
                     s.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
                     s.name = "conv " + row + ", " + column;
                     convolutionDisplay[row, column] = s;
+                }
+            }
+            for (int row = 0; row < value.row(); row++)
+            {
+                for (int column = 0; column < value.column(); column++)
+                {
+                    for (int layer = 0; layer < value.column(); layer++)
+                    {
+                        var s = GameObject.Instantiate(manager.template);
+//                        var layer = column / 9;
+//                        var c = column - layer * 9;
+                        s.transform.localPosition = new Vector3(4 + row, column, layer);
+                        s.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+                        s.name = "value " + row + ", " + column;
+                        valueDisplay[row, column, layer] = s;
+                    }
                 }
             }
 
@@ -121,14 +139,25 @@ public class SCR_ManagerConvNet : MonoBehaviour
                 {
                     var v = convolution[row, column];
                     var c = manager.gradient.Evaluate(Mathf.InverseLerp(-2, 2, v));
+                    c.a = 0.5f;
                     var s = Mathf.Clamp01(0.05f + Mathf.Abs(v / 4));
                     convolutionDisplay[row, column].material.color = c;
                     convolutionDisplay[row, column].transform.localScale = new Vector3(s, s, s);
-//                    var s = GameObject.Instantiate(manager.template);
-//                    var layer = column / 9;
-//                    var c = column - layer * 9;
-//                    s.transform.localPosition = new Vector3(c % 3, c / 3 - row * 4, -layer);
-//                    s.transform.localScale = new Vector3(0.9f, 0.9f, 0.9f);
+                }
+            }
+            for (int row = 0; row < value.row(); row++)
+            {
+                for (int column = 0; column < value.column(); column++)
+                {
+                    for (int layer = 0; layer < value.column(); layer++)
+                    {
+                        var v = value[row, column, layer];
+                        var c = manager.gradient.Evaluate(Mathf.InverseLerp(-2, 2, v));
+                        c.a = 0.5f;
+                        var s = Mathf.Clamp01(0.05f + Mathf.Abs(v / 4));
+                        valueDisplay[row, column, layer].material.color = c;
+                        valueDisplay[row, column, layer].transform.localScale = new Vector3(s, s, s);
+                    }
                 }
             }
 //            for (int row = 0; row < convolution.row(); row++)
